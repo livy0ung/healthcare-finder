@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Healthcare Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      line-height: 1.5;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    select {
+      margin-top: 0.25rem;
+      padding: 0.25rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    .results {
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1.5rem;
+    }
+    .service {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .service h3 {
+      margin: 0 0 0.25rem 0;
+    }
+    .service p {
+      margin: 0.25rem 0;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+    .helper {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Find Healthcare Resources</h1>
+
+  <form id="healthcare-form">
+    <label for="residency">What is your residency status?</label>
+    <select name="residency" id="residency">
+      <option value="local">Domestic (In Province)</option>
+      <option value="out">Domestic (Out of Province)</option>
+      <option value="international">International</option>
+    </select>
+
+    <label>What insurance do you have? (Select all that apply)</label>
+
+    <label>
+      <input type="checkbox" name="insurance" value="ramq" />
+      Quebec provincial insurance (RAMQ)
+    </label>
+
+    <label>
+      <input type="checkbox" name="insurance" value="other_prov" />
+      Other provincial insurance (e.g. Ontario residents)
+    </label>
+
+    <label>
+      <input type="checkbox" name="insurance" value="bluecross" />
+      Blue Cross (international students)
+    </label>
+
+    <label>
+      <input type="checkbox" name="insurance" value="ssmu" />
+      Undergraduate Supplemental Insurance Plan (SSMU or MCSS)
+    </label>
+
+    <label>
+      <input type="checkbox" name="insurance" value="none" />
+      None / Not sure
+    </label>
+
+    <p class="helper">
+      To know if you have SSMU insurance at McGill, check your tuition invoice on Minerva for a
+      "Student Association Health/Dental" fee, which confirms automatic enrollment for undergraduate
+      students paying Canadian/Quebec rates in the Fall.
+    </p>
+
+    <label for="need">What kind of healthcare do you need?</label>
+    <select name="need" id="need">
+      <option value="general">General Health</option>
+      <option value="mental">Mental Health</option>
+      <option value="sexual">Sexual Health</option>
+      <option value="urgent">Emergency Care</option>
+    </select>
+
+    <button type="submit">Find Resources</button>
+  </form>
+
+  <!-- Where results will appear -->
+  <div id="results" class="results"></div>
+
+  <script>
+    // 1. Define services by "need"
+    const servicesByNeed = {
+      general: [
+        {
+          name: "McGill Student Wellness Hub",
+          url: "https://www.mcgill.ca/wellness-hub/",
+          description: "Services provided: ",
+        },
+        {
+          name: "Local Walk-in Clinics",
+          url: "",
+          description: "Non-emergency appointments for common health issues.",
+        },
+      ],
+      mental: [
+        {
+          name: "Counselling Services (McGill)",
+          url: "https://www.mcgill.ca/wellness-hub/mental-health",
+          description: "Short-term counselling, groups, and workshops.",
+        },
+        {
+          name: "Crisis Hotlines (24/7)",
+          url: "",
+          description: "Immediate support for mental health crises.",
+        },
+      ],
+      sexual: [
+        {
+          name: "Sexual Health Clinic (McGill / Local CLSC)",
+          url: "",
+          description: "STI testing, contraception, and sexual health counselling.",
+        },
+      ],
+      urgent: [
+        {
+          name: "Emergency Room (Hospital)",
+          url: "",
+          description: "For serious or life-threatening conditions.",
+        },
+        {
+          name: "Info-Santé 811",
+          url: "https://www.quebec.ca/en/health/finding-a-resource/info-sante-811",
+          description: "Free phone line to speak with a nurse about urgent questions.",
+        },
+      ],
+    };
+
+    // 2. Function to generate coverage info based on residency + insurance selections
+    function getCoverageText({ residency, insurance }) {
+      const lines = [];
+
+      // Residency-based note
+      if (residency === "local") {
+        lines.push("As an in-province student, RAMQ generally covers medically necessary services in Quebec.");
+      } else if (residency === "out") {
+        lines.push("As an out-of-province student, your home provincial plan may cover some services in Quebec; check out-of-province rules.");
+      } else if (residency === "international") {
+        lines.push("As an international student, you may have coverage through Blue Cross (if enrolled).");
+      }
+
+      // Insurance-based notes (multiple selections)
+      if (insurance.length === 0 || insurance.includes("none")) {
+        lines.push("You selected none / not sure. If you're unsure about your coverage, check Minerva/your tuition invoice or contact student services.");
+        return lines.join(" ");
+      }
+
+      if (insurance.includes("ramq")) {
+        lines.push("You selected Quebec provincial insurance (RAMQ). Many doctor and hospital services in Quebec are covered.");
+      }
+      if (insurance.includes("other_prov")) {
+        lines.push("You selected other provincial insurance (e.g., Ontario). Your home province may cover some services in Quebec; reimbursement rules vary.");
+      }
+      if (insurance.includes("bluecross")) {
+        lines.push("You selected Blue Cross (international students). Check covered services, clinics, and claim procedures through your plan.");
+      }
+      if (insurance.includes("ssmu")) {
+        lines.push("You selected the Undergraduate Supplemental Insurance Plan (SSMU/MCSS). This often helps cover prescriptions, mental health services, and other costs not fully covered by provincial insurance.");
+      }
+
+      return lines.join(" ");
+    }
+
+    // 3. Make "None / Not sure" mutually exclusive with other checkboxes
+    document.querySelectorAll('input[name="insurance"]').forEach((box) => {
+      box.addEventListener("change", () => {
+        const noneBox = document.querySelector('input[name="insurance"][value="none"]');
+        const checkedBoxes = Array.from(document.querySelectorAll('input[name="insurance"]:checked'));
+
+        if (box.value === "none" && box.checked) {
+          // If "none" is checked, uncheck all others
+          checkedBoxes.forEach((cb) => {
+            if (cb.value !== "none") cb.checked = false;
+          });
+        } else if (checkedBoxes.some((cb) => cb.value !== "none")) {
+          // If any other box is checked, uncheck "none"
+          noneBox.checked = false;
+        }
+      });
+    });
+
+    // 4. Handle form submission
+    const form = document.getElementById("healthcare-form");
+    const resultsDiv = document.getElementById("results");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // stop the page from reloading
+
+      const residency = document.getElementById("residency").value;
+      const need = document.getElementById("need").value;
+
+      const insurance = Array.from(
+        document.querySelectorAll('input[name="insurance"]:checked')
+      ).map((cb) => cb.value);
+
+      const selectedServices = servicesByNeed[need] || [];
+      const coverageText = getCoverageText({ residency, insurance });
+
+      // Build HTML for results
+      if (selectedServices.length === 0) {
+        resultsDiv.innerHTML = "<p>No services found for that selection.</p>";
+        return;
+      }
+
+      const needLabel = document.getElementById("need").options[document.getElementById("need").selectedIndex].text;
+      let html = `<h2>Recommended Services for: ${needLabel}</h2>`;
+      html += `<p><strong>Coverage notes:</strong> ${coverageText}</p>`;
+
+      selectedServices.forEach((service) => {
+        html += `
+          <div class="service">
+            <h3>${service.name}</h3>
+            <p>${service.description}</p>
+            ${service.url ? `<p><a href="${service.url}" target="_blank" rel="noopener noreferrer">Learn more</a></p>` : ""}
+          </div>
+        `;
+      });
+
+      resultsDiv.innerHTML = html;
+    });
+  </script>
+</body>
+</html>
