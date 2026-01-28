@@ -5,10 +5,7 @@
   <title>Student Healthcare Finder</title>
 
   <!-- Leaflet (free map library) -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
@@ -60,17 +57,6 @@
     .muted {
       color: #555;
     }
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    .clickable {
-      cursor: pointer;
-    }
-    .clickable:hover {
-      border-color: #bbb;
-    }
     #map-wrapper {
       display: none; /* only show after results */
       margin-top: 1rem;
@@ -79,6 +65,12 @@
       height: 380px;
       border: 1px solid #ddd;
       border-radius: 6px;
+    }
+    .clickable {
+      cursor: pointer;
+    }
+    .clickable:hover {
+      border-color: #bbb;
     }
   </style>
 </head>
@@ -96,30 +88,11 @@
 
     <label>What health insurance coverage do you have? (Select all that apply)</label>
 
-    <label>
-      <input type="checkbox" name="insurance" value="ramq" />
-      Quebec provincial insurance (RAMQ)
-    </label>
-
-    <label>
-      <input type="checkbox" name="insurance" value="other_prov" />
-      Other provincial/territorial health insurance (For Canadian residents from outside Quebec)
-    </label>
-
-    <label>
-      <input type="checkbox" name="insurance" value="bluecross" />
-      Blue Cross (International students)
-    </label>
-
-    <label>
-      <input type="checkbox" name="insurance" value="ssmu" />
-      Undergraduate Supplemental Insurance Plan (SSMU or MCSS)
-    </label>
-
-    <label>
-      <input type="checkbox" name="insurance" value="none" />
-      None / Not sure
-    </label>
+    <label><input type="checkbox" name="insurance" value="ramq" />Quebec provincial insurance (RAMQ)</label>
+    <label><input type="checkbox" name="insurance" value="other_prov" />Other provincial/territorial health insurance (For Canadian residents from outside Quebec)</label>
+    <label><input type="checkbox" name="insurance" value="bluecross" />Blue Cross (International students)</label>
+    <label><input type="checkbox" name="insurance" value="ssmu" />Undergraduate Supplemental Insurance Plan (SSMU or MCSS)</label>
+    <label><input type="checkbox" name="insurance" value="none" />None / Not sure</label>
 
     <p class="helper">
       To know if you are enrolled in the SSMU or MCSS plan at McGill, check your tuition invoice on Minerva for a
@@ -134,25 +107,22 @@
       <option value="urgent">Emergency Care</option>
     </select>
 
+    <!-- Hidden until "General Health" is selected -->
     <div id="problem-wrapper" style="display:none;">
       <label for="problem">What best describes your situation?</label>
       <select id="problem"></select>
     </div>
-    
 
     <button type="submit">Find Resources</button>
   </form>
 
-  <!-- Where results will appear -->
   <div id="results" class="results"></div>
 
   <!-- Map + details (hidden until results appear) -->
   <div id="map-wrapper">
     <h2>Nearby Locations Map</h2>
     <p class="muted">Click a pin or a location card to see details and cost/coverage notes.</p>
-
     <div id="service-map"></div>
-
     <div id="location-details" class="service" style="display:none; margin-top: 1rem;"></div>
   </div>
 
@@ -160,35 +130,26 @@
     /***********************
      * 0) DATA (EDIT LATER)
      ***********************/
+    const problemOptions = {
+      general: [
+        { value: "minor_illness", label: "Minor illness (cold, flu, sore throat, fever)" },
+        { value: "physical_injury", label: "Physical injury (sprain, strain, minor fracture)" },
+        { value: "ongoing_pain", label: "Ongoing pain (headache, back pain, joint pain)" },
+        { value: "skin", label: "Skin concerns (rash, acne, infection)" },
+        { value: "digestive", label: "Stomach or digestive issues" },
+        { value: "medication", label: "Medication questions or refills" },
+        { value: "chronic", label: "Chronic condition management (asthma, diabetes, etc.)" },
+        { value: "forms", label: "Medical forms or doctor’s note" },
+        { value: "other", label: "Not sure / something else" }
+      ]
+    };
 
-   // Problem categories shown after selecting a need.
-// For now we only add sub-categories for "general".
-const problemOptions = {
-  general: [
-    { value: "minor_illness", label: "Minor illness (cold, flu, sore throat, fever)" },
-    { value: "physical_injury", label: "Physical injury (sprain, strain, minor fracture)" },
-    { value: "ongoing_pain", label: "Ongoing pain (headache, back pain, joint pain)" },
-    { value: "skin", label: "Skin concerns (rash, acne, infection)" },
-    { value: "digestive", label: "Stomach or digestive issues" },
-    { value: "medication", label: "Medication questions or refills" },
-    { value: "chronic", label: "Chronic condition management (asthma, diabetes, etc.)" },
-    { value: "forms", label: "Medical forms or doctor’s note" },
-    { value: "other", label: "Not sure / something else" }
-  ]
-};
-  
-    // Center point (McGill downtown campus-ish)
     const MCGILL_CENTER = {
       name: "McGill University (Downtown Campus)",
       lat: 45.5048,
       lng: -73.5772
     };
 
-    // "Resources" are informational (may not have a map pin).
-    // "Locations" are physical places; we will map them.
-    //
-    // NOTE: Some clinics below are included as *fillers* and can be replaced later.
-    // For any location without lat/lng, the code will try to geocode the address automatically.
     const resources = [
       {
         id: "info-sante-811",
@@ -196,11 +157,16 @@ const problemOptions = {
         url: "https://www.quebec.ca/en/health/finding-a-resource/info-sante-811",
         needs: ["urgent", "general", "mental", "sexual"],
         description: "Free phone line to connect with a nurse for non-urgent health advice (24/7)."
+      },
+      {
+        id: "mcgill-wellness-hub-resource",
+        name: "McGill Student Wellness Hub",
+        url: "https://www.mcgill.ca/wellness-hub/",
+        needs: ["general", "mental", "sexual"],
+        description: "Starting point for many McGill student health and wellness services."
       }
-      
     ];
 
-    // Physical locations to show on the map + list.
     const locations = [
       // ER / Emergency departments
       {
@@ -228,14 +194,15 @@ const problemOptions = {
         tags: ["Emergency room"]
       },
 
-      // General / walk-in style clinics (fillers you can replace)
+      // General clinics (fillers)
       {
         id: "mcgill-wellness-hub",
         name: "McGill Student Wellness Hub",
-        url: "https://www.mcgill.ca/wellness-hub/",
         needs: ["general", "mental", "sexual"],
         problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
-        description: "Starting point for many McGill student health and wellness services."
+        address: "McGill Downtown Campus, Montréal, QC",
+        url: "https://www.mcgill.ca/wellness-hub/",
+        tags: ["Student services"]
       },
       {
         id: "centre-medical-decelles",
@@ -256,7 +223,7 @@ const problemOptions = {
         tags: ["Example clinic", "Appointments / walk-in may vary"]
       },
 
-      // Sexual health (placeholder)
+      // Sexual / Mental placeholders
       {
         id: "sexual-health-placeholder",
         name: "Sexual Health Clinic (Placeholder)",
@@ -265,8 +232,6 @@ const problemOptions = {
         url: "",
         tags: ["Placeholder"]
       },
-
-      // Mental health (placeholder physical location)
       {
         id: "mental-health-placeholder",
         name: "Mental Health Clinic/Center (Placeholder)",
@@ -278,12 +243,11 @@ const problemOptions = {
     ];
 
     /*************************************
-     * 1) COVERAGE TEXT (YOUR EXISTING LOGIC)
+     * 1) COVERAGE TEXT
      *************************************/
     function getCoverageText({ residency, insurance }) {
       const lines = [];
 
-      // Residency-based note
       if (residency === "local") {
         lines.push("As an in-province student, RAMQ generally covers medically necessary services in Quebec.");
       } else if (residency === "out") {
@@ -292,7 +256,6 @@ const problemOptions = {
         lines.push("As an international student, you may have coverage through Blue Cross (if enrolled).");
       }
 
-      // Insurance-based notes (multiple selections)
       if (insurance.length === 0 || insurance.includes("none")) {
         lines.push("You selected none / not sure. If you're unsure about your coverage, check Minerva/your tuition invoice or contact student services.");
         return lines.join(" ");
@@ -358,7 +321,6 @@ const problemOptions = {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(serviceMap);
 
-      // McGill marker (always)
       const mcgillMarker = L.marker([MCGILL_CENTER.lat, MCGILL_CENTER.lng]).addTo(serviceMap);
       mcgillMarker.bindPopup(`<b>${MCGILL_CENTER.name}</b>`);
     }
@@ -372,24 +334,15 @@ const problemOptions = {
       if (!address) return null;
       if (geocodeCache.has(address)) return geocodeCache.get(address);
 
-      // Uses OpenStreetMap Nominatim (no API key).
-      // If it fails, we just won't place that pin.
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
       try {
-        const resp = await fetch(url, {
-          headers: {
-            "Accept": "application/json"
-          }
-        });
+        const resp = await fetch(url, { headers: { "Accept": "application/json" } });
         const data = await resp.json();
 
         if (!Array.isArray(data) || data.length === 0) return null;
 
-        const result = {
-          lat: Number(data[0].lat),
-          lng: Number(data[0].lon)
-        };
+        const result = { lat: Number(data[0].lat), lng: Number(data[0].lon) };
         if (Number.isFinite(result.lat) && Number.isFinite(result.lng)) {
           geocodeCache.set(address, result);
           return result;
@@ -405,17 +358,14 @@ const problemOptions = {
     }
 
     function buildLocationCoverageText(location, userSelections) {
-      // Simple per-location logic for now (you can customize later per clinic).
-      // You can make this as detailed as you want by adding a "coverageRules" field per location.
       const base = getCoverageText(userSelections);
-
       const extras = [];
+
       if (location.needs.includes("urgent")) {
         extras.push("Emergency departments generally provide care regardless of ability to pay up front, but billing and eligibility can vary—especially for non-RAMQ coverage.");
       } else {
         extras.push("Costs can vary by clinic and service type. Call ahead if you're unsure about fees or what insurance they accept.");
       }
-
       return `${base} ${extras.join(" ")}`;
     }
 
@@ -447,10 +397,8 @@ const problemOptions = {
       initServiceMap();
       clearMarkers();
 
-      // Resolve coordinates (lat/lng) for each location
       const resolved = [];
       for (const loc of matchingLocations) {
-        // If you later add exact lat/lng, they will be used automatically.
         let latLng = null;
         if (typeof loc.lat === "number" && typeof loc.lng === "number") {
           latLng = { lat: loc.lat, lng: loc.lng };
@@ -460,7 +408,6 @@ const problemOptions = {
         resolved.push({ loc, latLng });
       }
 
-      // Add markers for locations with coordinates
       const boundsPoints = [[MCGILL_CENTER.lat, MCGILL_CENTER.lng]];
       for (const item of resolved) {
         if (!item.latLng) continue;
@@ -477,7 +424,6 @@ const problemOptions = {
         serviceMarkers.push(marker);
       }
 
-      // Fit map to show everything we can
       if (boundsPoints.length > 1) {
         serviceMap.fitBounds(boundsPoints, { padding: [30, 30] });
       } else {
@@ -488,44 +434,43 @@ const problemOptions = {
     }
 
     /*************************************
-     * 4) FORM SUBMIT: SHOW RESULTS + MAP
+     * 4) FORM SUBMIT + PROBLEM DROPDOWN
      *************************************/
     const form = document.getElementById("healthcare-form");
     const resultsDiv = document.getElementById("results");
 
-  // Show/hide the problem dropdown when "need" changes
-const needSelect = document.getElementById("need");
-const problemWrapper = document.getElementById("problem-wrapper");
-const problemSelect = document.getElementById("problem");
+    // Show/hide the problem dropdown when "need" changes
+    const needSelect = document.getElementById("need");
+    const problemWrapper = document.getElementById("problem-wrapper");
+    const problemSelect = document.getElementById("problem");
 
-function updateProblemDropdown() {
-  const need = needSelect.value;
+    function updateProblemDropdown() {
+      const need = needSelect.value;
 
-  if (problemOptions[need]) {
-    problemWrapper.style.display = "block";
-    problemSelect.innerHTML = "";
+      if (problemOptions[need]) {
+        problemWrapper.style.display = "block";
+        problemSelect.innerHTML = "";
 
-    problemOptions[need].forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.value;
-      opt.textContent = p.label;
-      problemSelect.appendChild(opt);
-    });
-  } else {
-    problemWrapper.style.display = "none";
-    problemSelect.innerHTML = "";
-  }
-}
+        problemOptions[need].forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = p.value;
+          opt.textContent = p.label;
+          problemSelect.appendChild(opt);
+        });
+      } else {
+        problemWrapper.style.display = "none";
+        problemSelect.innerHTML = "";
+      }
+    }
 
-// Run once on load + when need changes
-updateProblemDropdown();
-needSelect.addEventListener("change", updateProblemDropdown);
-  
+    updateProblemDropdown();
+    needSelect.addEventListener("change", updateProblemDropdown);
+
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
       const residency = document.getElementById("residency").value;
-      const need = document.getElementById("need").value;
+      const need = needSelect.value;
       const problem = (problemWrapper.style.display !== "none") ? problemSelect.value : "";
 
       const insurance = Array.from(
@@ -534,32 +479,28 @@ needSelect.addEventListener("change", updateProblemDropdown);
 
       const userSelections = { residency, insurance };
 
-      // 1) Coverage notes (general)
       const coverageText = getCoverageText(userSelections);
 
-      // 2) Filter resources + locations for selected need
       const matchingResources = resources.filter(r => r.needs.includes(need));
+
       const matchingLocations = locations.filter(l => {
-  if (!l.needs.includes(need)) return false;
+        if (!l.needs.includes(need)) return false;
 
-  // Only apply "problem" filtering for general health
-  if (need === "general") {
-    if (!problem) return true;           // no problem selected (shouldn't happen often)
-    if (!l.problems) return true;        // if clinic doesn't specify problems yet, still include it
-    return l.problems.includes(problem); // otherwise match the selected problem
-  }
+        if (need === "general") {
+          if (!problem) return true;
+          if (!l.problems) return true;
+          return l.problems.includes(problem);
+        }
+        return true;
+      });
 
-  return true;
-});
-
-      // 3) Build results HTML (resources + clickable location cards)
-      const needLabel = document.getElementById("need").options[document.getElementById("need").selectedIndex].text;
+      const needLabel = needSelect.options[needSelect.selectedIndex].text;
 
       let html = `<h2>Recommended Services for: ${needLabel}</h2>`;
       html += `<p><strong>Coverage notes:</strong> ${coverageText}</p>`;
 
       if (need === "general" && problem) {
-      const problemLabel = problemSelect.options[problemSelect.selectedIndex]?.text || "";
+        const problemLabel = problemSelect.options[problemSelect.selectedIndex]?.text || "";
         html += `<p><strong>Selected category:</strong> ${problemLabel}</p>`;
       }
 
@@ -572,7 +513,6 @@ needSelect.addEventListener("change", updateProblemDropdown);
         `;
       }
 
-      // Resources section
       if (matchingResources.length) {
         html += `<h3>Resources</h3>`;
         matchingResources.forEach((r) => {
@@ -586,26 +526,20 @@ needSelect.addEventListener("change", updateProblemDropdown);
         });
       }
 
-      // Locations section
       html += `<h3>Locations</h3>`;
       if (!matchingLocations.length) {
         html += `<p>No locations found for that selection.</p>`;
         resultsDiv.innerHTML = html;
-
-        // Hide map if nothing to show
         hideMapUI();
         return;
       }
 
-      // Show loading message while we geocode + render map
       resultsDiv.innerHTML = html + `<p class="muted">Loading map and locations…</p>`;
       showMapUI();
       initServiceMap();
 
-      // Render markers and get resolved lat/lng
       const resolved = await renderLocationsOnMap(matchingLocations, userSelections);
 
-      // Now render clickable location cards
       let locationsHtml = "";
       resolved.forEach(({ loc, latLng }) => {
         const hasCoords = !!latLng;
@@ -623,7 +557,6 @@ needSelect.addEventListener("change", updateProblemDropdown);
 
       resultsDiv.innerHTML = html + locationsHtml;
 
-      // Add click handlers for each card
       document.querySelectorAll('[data-loc-id]').forEach(card => {
         card.addEventListener("click", () => {
           const id = card.getAttribute("data-loc-id");
