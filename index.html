@@ -134,6 +134,12 @@
       <option value="urgent">Emergency Care</option>
     </select>
 
+    <div id="problem-wrapper" style="display:none;">
+      <label for="problem">What best describes your situation?</label>
+      <select id="problem"></select>
+    </div>
+    
+
     <button type="submit">Find Resources</button>
   </form>
 
@@ -155,6 +161,23 @@
      * 0) DATA (EDIT LATER)
      ***********************/
 
+   // Problem categories shown after selecting a need.
+// For now we only add sub-categories for "general".
+const problemOptions = {
+  general: [
+    { value: "minor_illness", label: "Minor illness (cold, flu, sore throat, fever)" },
+    { value: "physical_injury", label: "Physical injury (sprain, strain, minor fracture)" },
+    { value: "ongoing_pain", label: "Ongoing pain (headache, back pain, joint pain)" },
+    { value: "skin", label: "Skin concerns (rash, acne, infection)" },
+    { value: "digestive", label: "Stomach or digestive issues" },
+    { value: "medication", label: "Medication questions or refills" },
+    { value: "chronic", label: "Chronic condition management (asthma, diabetes, etc.)" },
+    { value: "vaccines", label: "Vaccines or immunizations" },
+    { value: "forms", label: "Medical forms or doctor’s note" },
+    { value: "other", label: "Not sure / something else" }
+  ]
+};
+  
     // Center point (McGill downtown campus-ish)
     const MCGILL_CENTER = {
       name: "McGill University (Downtown Campus)",
@@ -174,14 +197,8 @@
         url: "https://www.quebec.ca/en/health/finding-a-resource/info-sante-811",
         needs: ["urgent", "general", "mental", "sexual"],
         description: "Free phone line to connect with a nurse for non-urgent health advice (24/7)."
-      },
-      {
-        id: "mcgill-wellness-hub",
-        name: "McGill Student Wellness Hub",
-        url: "https://www.mcgill.ca/wellness-hub/",
-        needs: ["general", "mental", "sexual"],
-        description: "Starting point for many McGill student health and wellness services."
       }
+      
     ];
 
     // Physical locations to show on the map + list.
@@ -214,9 +231,18 @@
 
       // General / walk-in style clinics (fillers you can replace)
       {
+        id: "mcgill-wellness-hub",
+        name: "McGill Student Wellness Hub",
+        url: "https://www.mcgill.ca/wellness-hub/",
+        needs: ["general", "mental", "sexual"],
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
+        description: "Starting point for many McGill student health and wellness services."
+      },
+      {
         id: "centre-medical-decelles",
         name: "Centre Médicale Décelles (Example clinic)",
         needs: ["general"],
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
         address: "6900 Ave Decarie, Montréal, QC",
         url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
         tags: ["Example clinic", "Appointments / walk-in may vary"]
@@ -225,6 +251,7 @@
         id: "cura-sante",
         name: "Cura Santé (Example clinic)",
         needs: ["general"],
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
         address: "5515 Rue Saint-Jacques, Montréal, QC",
         url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
         tags: ["Example clinic", "Appointments / walk-in may vary"]
@@ -467,11 +494,40 @@
     const form = document.getElementById("healthcare-form");
     const resultsDiv = document.getElementById("results");
 
+  // Show/hide the problem dropdown when "need" changes
+const needSelect = document.getElementById("need");
+const problemWrapper = document.getElementById("problem-wrapper");
+const problemSelect = document.getElementById("problem");
+
+function updateProblemDropdown() {
+  const need = needSelect.value;
+
+  if (problemOptions[need]) {
+    problemWrapper.style.display = "block";
+    problemSelect.innerHTML = "";
+
+    problemOptions[need].forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.value;
+      opt.textContent = p.label;
+      problemSelect.appendChild(opt);
+    });
+  } else {
+    problemWrapper.style.display = "none";
+    problemSelect.innerHTML = "";
+  }
+}
+
+// Run once on load + when need changes
+updateProblemDropdown();
+needSelect.addEventListener("change", updateProblemDropdown);
+  
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
       const residency = document.getElementById("residency").value;
       const need = document.getElementById("need").value;
+      const problem = (problemWrapper.style.display !== "none") ? problemSelect.value : "";
 
       const insurance = Array.from(
         document.querySelectorAll('input[name="insurance"]:checked')
@@ -484,13 +540,29 @@
 
       // 2) Filter resources + locations for selected need
       const matchingResources = resources.filter(r => r.needs.includes(need));
-      const matchingLocations = locations.filter(l => l.needs.includes(need));
+      const matchingLocations = locations.filter(l => {
+  if (!l.needs.includes(need)) return false;
+
+  // Only apply "problem" filtering for general health
+  if (need === "general") {
+    if (!problem) return true;           // no problem selected (shouldn't happen often)
+    if (!l.problems) return true;        // if clinic doesn't specify problems yet, still include it
+    return l.problems.includes(problem); // otherwise match the selected problem
+  }
+
+  return true;
+});
 
       // 3) Build results HTML (resources + clickable location cards)
       const needLabel = document.getElementById("need").options[document.getElementById("need").selectedIndex].text;
 
       let html = `<h2>Recommended Services for: ${needLabel}</h2>`;
       html += `<p><strong>Coverage notes:</strong> ${coverageText}</p>`;
+
+      if (need === "general" && problem) {
+      const problemLabel = problemSelect.options[problemSelect.selectedIndex]?.text || "";
+        html += `<p><strong>Selected category:</strong> ${problemLabel}</p>`;
+      }
 
       if (need === "urgent") {
         html += `
