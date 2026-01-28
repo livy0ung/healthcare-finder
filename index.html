@@ -33,17 +33,17 @@
       border-top: 1px solid #ccc;
       padding-top: 1.5rem;
     }
-    .service {
+    .card {
       margin-bottom: 1rem;
       padding: 0.75rem;
       border: 1px solid #ddd;
       border-radius: 4px;
       background: #fff;
     }
-    .service h3 {
+    .card h3 {
       margin: 0 0 0.25rem 0;
     }
-    .service p {
+    .card p {
       margin: 0.25rem 0;
     }
     input[type="checkbox"] {
@@ -57,6 +57,14 @@
     .muted {
       color: #555;
     }
+    .clickable {
+      cursor: pointer;
+    }
+    .clickable:hover {
+      border-color: #bbb;
+    }
+
+    /* Map */
     #map-wrapper {
       display: none; /* only show after results */
       margin-top: 1rem;
@@ -66,64 +74,96 @@
       border: 1px solid #ddd;
       border-radius: 6px;
     }
-    .clickable {
+
+    /* “Pages” (views) */
+    #search-view { display: block; }
+    #details-view { display: none; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .back-btn {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 6px;
       cursor: pointer;
     }
-    .clickable:hover {
+    .back-btn:hover {
       border-color: #bbb;
     }
   </style>
 </head>
 
 <body>
-  <h1>Find Healthcare Resources</h1>
 
-  <form id="healthcare-form">
-    <label for="residency">What is your residency status?</label>
-    <select name="residency" id="residency">
-      <option value="local">Domestic (In Province)</option>
-      <option value="out">Domestic (Out of Province)</option>
-      <option value="international">International</option>
-    </select>
+  <!-- =========================
+       VIEW 1: SEARCH + RESULTS
+       ========================= -->
+  <div id="search-view">
+    <h1>Find Healthcare Resources</h1>
 
-    <label>What health insurance coverage do you have? (Select all that apply)</label>
+    <form id="healthcare-form">
+      <label for="residency">What is your residency status?</label>
+      <select name="residency" id="residency">
+        <option value="local">Domestic (In Province)</option>
+        <option value="out">Domestic (Out of Province)</option>
+        <option value="international">International</option>
+      </select>
 
-    <label><input type="checkbox" name="insurance" value="ramq" />Quebec provincial insurance (RAMQ)</label>
-    <label><input type="checkbox" name="insurance" value="other_prov" />Other provincial/territorial health insurance (For Canadian residents from outside Quebec)</label>
-    <label><input type="checkbox" name="insurance" value="bluecross" />Blue Cross (International students)</label>
-    <label><input type="checkbox" name="insurance" value="ssmu" />Undergraduate Supplemental Insurance Plan (SSMU or MCSS)</label>
-    <label><input type="checkbox" name="insurance" value="none" />None / Not sure</label>
+      <label>What health insurance coverage do you have? (Select all that apply)</label>
 
-    <p class="helper">
-      To know if you are enrolled in the SSMU or MCSS plan at McGill, check your tuition invoice on Minerva for a
-      "Student Association Health/Dental" fee. Undergraduate students paying Quebec/Canadian tuition rates in the Fall semester are automatically enrolled.
-    </p>
+      <label><input type="checkbox" name="insurance" value="ramq" />Quebec provincial insurance (RAMQ)</label>
+      <label><input type="checkbox" name="insurance" value="other_prov" />Other provincial/territorial health insurance (For Canadian residents from outside Quebec)</label>
+      <label><input type="checkbox" name="insurance" value="bluecross" />Blue Cross (International students)</label>
+      <label><input type="checkbox" name="insurance" value="ssmu" />Undergraduate Supplemental Insurance Plan (SSMU or MCSS)</label>
+      <label><input type="checkbox" name="insurance" value="none" />None / Not sure</label>
 
-    <label for="need">What kind of healthcare do you need?</label>
-    <select name="need" id="need">
-      <option value="general">General Health</option>
-      <option value="mental">Mental Health</option>
-      <option value="sexual">Sexual Health</option>
-      <option value="urgent">Emergency Care</option>
-    </select>
+      <p class="helper">
+        To know if you are enrolled in the SSMU or MCSS plan at McGill, check your tuition invoice on Minerva for a
+        "Student Association Health/Dental" fee. Undergraduate students paying Quebec/Canadian tuition rates in the Fall semester are automatically enrolled.
+      </p>
 
-    <!-- Hidden until "General Health" is selected -->
-    <div id="problem-wrapper" style="display:none;">
-      <label for="problem">What best describes your situation?</label>
-      <select id="problem"></select>
+      <label for="need">What kind of healthcare do you need?</label>
+      <select name="need" id="need">
+        <option value="general">General Health</option>
+        <option value="mental">Mental Health</option>
+        <option value="sexual">Sexual Health</option>
+        <option value="urgent">Emergency Care</option>
+      </select>
+
+      <!-- Hidden until "General Health" is selected -->
+      <div id="problem-wrapper" style="display:none;">
+        <label for="problem">What best describes your situation?</label>
+        <select id="problem"></select>
+      </div>
+
+      <button type="submit">Find Resources</button>
+    </form>
+
+    <div id="results" class="results"></div>
+
+    <!-- Map (hidden until results appear) -->
+    <div id="map-wrapper">
+      <h2>Nearby Locations Map</h2>
+      <p class="muted">Click a pin or a location card to see details.</p>
+      <div id="service-map"></div>
+    </div>
+  </div>
+
+  <!-- =========================
+       VIEW 2: DETAILS “PAGE”
+       ========================= -->
+  <div id="details-view">
+    <div class="topbar">
+      <button class="back-btn" id="back-btn">← Back to results</button>
+      <div class="muted" id="details-breadcrumb"></div>
     </div>
 
-    <button type="submit">Find Resources</button>
-  </form>
-
-  <div id="results" class="results"></div>
-
-  <!-- Map + details (hidden until results appear) -->
-  <div id="map-wrapper">
-    <h2>Nearby Locations Map</h2>
-    <p class="muted">Click a pin or a location card to see details and cost/coverage notes.</p>
-    <div id="service-map"></div>
-    <div id="location-details" class="service" style="display:none; margin-top: 1rem;"></div>
+    <div id="details-card" class="card"></div>
   </div>
 
   <script>
@@ -150,6 +190,7 @@
       lng: -73.5772
     };
 
+    // Resources = informational, not mapped
     const resources = [
       {
         id: "info-sante-811",
@@ -167,14 +208,15 @@
       }
     ];
 
+    // Locations = physical places, mapped
     const locations = [
-      // ER / Emergency departments
       {
         id: "mgh-er",
         name: "Montreal General Hospital (MUHC) – Emergency",
         needs: ["urgent"],
         address: "1650 Cedar Ave, Montréal, QC H3G 1A4",
         url: "https://muhc.ca/montreal-general-hospital",
+        servicesOffered: ["Emergency assessment", "Urgent imaging/referrals", "Hospital-based emergency care"],
         tags: ["Emergency room"]
       },
       {
@@ -183,6 +225,7 @@
         needs: ["urgent"],
         address: "1001 Rue Sanguinet, Montréal, QC H2X 1R6",
         url: "https://www.chumontreal.qc.ca/le-chum-votre-hopital/nous-joindre",
+        servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
         tags: ["Emergency room"]
       },
       {
@@ -191,87 +234,92 @@
         needs: ["urgent"],
         address: "3755 Chemin de la Côte-Sainte-Catherine, Montréal, QC H3T 1E2",
         url: "https://www.jgh.ca/care-services/emergency/",
+        servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
         tags: ["Emergency room"]
       },
 
-      // General clinics (fillers)
       {
         id: "mcgill-wellness-hub",
         name: "McGill Student Wellness Hub",
         needs: ["general", "mental", "sexual"],
-        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
         address: "McGill Downtown Campus, Montréal, QC",
         url: "https://www.mcgill.ca/wellness-hub/",
+        servicesOffered: [
+          "Appointments/referrals (depending on service)",
+          "Navigation to McGill health services",
+          "Wellness and mental health supports"
+        ],
         tags: ["Student services"]
       },
       {
         id: "centre-medical-decelles",
         name: "Centre Médicale Décelles (Example clinic)",
         needs: ["general"],
-        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
         address: "6900 Ave Decarie, Montréal, QC",
         url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
+        servicesOffered: [
+          "General medical appointments",
+          "Illness/injury assessment (non-emergency)",
+          "Basic prescriptions/refills (varies)"
+        ],
         tags: ["Example clinic", "Appointments / walk-in may vary"]
       },
       {
         id: "cura-sante",
         name: "Cura Santé (Example clinic)",
         needs: ["general"],
-        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "forms", "other"],
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
         address: "5515 Rue Saint-Jacques, Montréal, QC",
         url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
+        servicesOffered: [
+          "General medical appointments",
+          "Illness assessment",
+          "Referrals (varies by clinic)"
+        ],
         tags: ["Example clinic", "Appointments / walk-in may vary"]
-      },
-
-      // Sexual / Mental placeholders
-      {
-        id: "sexual-health-placeholder",
-        name: "Sexual Health Clinic (Placeholder)",
-        needs: ["sexual"],
-        address: "Montréal, QC (replace with your preferred clinic/CLSC)",
-        url: "",
-        tags: ["Placeholder"]
-      },
-      {
-        id: "mental-health-placeholder",
-        name: "Mental Health Clinic/Center (Placeholder)",
-        needs: ["mental"],
-        address: "Montréal, QC (replace with your preferred center)",
-        url: "",
-        tags: ["Placeholder"]
       }
     ];
 
     /*************************************
-     * 1) COVERAGE TEXT
+     * 1) COVERAGE / COST TEXT
+     * (Shown ONLY on the details page)
      *************************************/
-    function getCoverageText({ residency, insurance }) {
+    function buildCoverageForDetails({ residency, insurance }, location) {
       const lines = [];
 
+      // general context
       if (residency === "local") {
-        lines.push("As an in-province student, RAMQ generally covers medically necessary services in Quebec.");
+        lines.push("Residency: In-province (QC). RAMQ often covers medically necessary physician/hospital services if you’re eligible.");
       } else if (residency === "out") {
-        lines.push("As an out-of-province student, your home provincial plan may cover some services in Quebec; check out-of-province rules.");
+        lines.push("Residency: Out-of-province. Your home provincial plan may reimburse care in Quebec; rules vary.");
       } else if (residency === "international") {
-        lines.push("As an international student, you may have coverage through Blue Cross (if enrolled).");
+        lines.push("Residency: International. Coverage often depends on Blue Cross (if you’re enrolled) and what the provider accepts.");
       }
 
-      if (insurance.length === 0 || insurance.includes("none")) {
-        lines.push("You selected none / not sure. If you're unsure about your coverage, check Minerva/your tuition invoice or contact student services.");
+      if (!insurance.length || insurance.includes("none")) {
+        lines.push("Insurance: None / not sure. Call the clinic/hospital and ask what documents and payment methods they accept. If you’re a student, check Minerva/your tuition invoice to confirm coverage.");
         return lines.join(" ");
       }
 
-      if (insurance.includes("ramq")) {
-        lines.push("You selected Quebec provincial insurance (RAMQ). Many doctor and hospital services in Quebec are covered.");
+      const picked = [];
+      if (insurance.includes("ramq")) picked.push("RAMQ");
+      if (insurance.includes("other_prov")) picked.push("Other provincial/territorial");
+      if (insurance.includes("bluecross")) picked.push("Blue Cross");
+      if (insurance.includes("ssmu")) picked.push("SSMU/MCSS");
+
+      lines.push(`Insurance selected: ${picked.join(", ")}.`);
+
+      // location-type hints
+      if (location.needs.includes("urgent")) {
+        lines.push("Emergency departments generally provide care, but billing/eligibility can vary (especially if not RAMQ-covered). Bring ID/insurance documents if you have them.");
+      } else {
+        lines.push("For clinics, fees and coverage vary by provider and service type. Ask about the visit fee and whether they bill your insurer directly or require reimbursement.");
       }
-      if (insurance.includes("other_prov")) {
-        lines.push("You selected other provincial/territorial insurance. Your home province may cover some services in Quebec; reimbursement rules vary.");
-      }
-      if (insurance.includes("bluecross")) {
-        lines.push("You selected Blue Cross (international students). Check covered services, clinics, and claim procedures through your plan.");
-      }
+
       if (insurance.includes("ssmu")) {
-        lines.push("You selected the Undergraduate Supplemental Insurance Plan (SSMU/MCSS). This often helps cover prescriptions, mental health services, and other costs not fully covered by provincial insurance.");
+        lines.push("SSMU/MCSS may help with eligible costs that aren’t fully covered elsewhere (example: certain prescriptions or services). Check plan details for exact reimbursement.");
       }
 
       return lines.join(" ");
@@ -286,9 +334,7 @@
         const checkedBoxes = Array.from(document.querySelectorAll('input[name="insurance"]:checked'));
 
         if (box.value === "none" && box.checked) {
-          checkedBoxes.forEach((cb) => {
-            if (cb.value !== "none") cb.checked = false;
-          });
+          checkedBoxes.forEach((cb) => { if (cb.value !== "none") cb.checked = false; });
         } else if (checkedBoxes.some((cb) => cb.value !== "none")) {
           noneBox.checked = false;
         }
@@ -296,7 +342,7 @@
     });
 
     /*************************************
-     * 3) MAP + CLICKABLE DETAILS
+     * 3) MAP
      *************************************/
     let serviceMap = null;
     let serviceMarkers = [];
@@ -305,10 +351,8 @@
     function showMapUI() {
       document.getElementById("map-wrapper").style.display = "block";
     }
-
     function hideMapUI() {
       document.getElementById("map-wrapper").style.display = "none";
-      document.getElementById("location-details").style.display = "none";
     }
 
     function initServiceMap() {
@@ -339,7 +383,6 @@
       try {
         const resp = await fetch(url, { headers: { "Accept": "application/json" } });
         const data = await resp.json();
-
         if (!Array.isArray(data) || data.length === 0) return null;
 
         const result = { lat: Number(data[0].lat), lng: Number(data[0].lon) };
@@ -357,43 +400,7 @@
       return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(lat + "," + lng)}`;
     }
 
-    function buildLocationCoverageText(location, userSelections) {
-      const base = getCoverageText(userSelections);
-      const extras = [];
-
-      if (location.needs.includes("urgent")) {
-        extras.push("Emergency departments generally provide care regardless of ability to pay up front, but billing and eligibility can vary—especially for non-RAMQ coverage.");
-      } else {
-        extras.push("Costs can vary by clinic and service type. Call ahead if you're unsure about fees or what insurance they accept.");
-      }
-      return `${base} ${extras.join(" ")}`;
-    }
-
-    function showLocationDetails(location, userSelections, resolvedLatLng) {
-      const details = document.getElementById("location-details");
-      details.style.display = "block";
-
-      const coverageText = buildLocationCoverageText(location, userSelections);
-
-      const lat = resolvedLatLng?.lat;
-      const lng = resolvedLatLng?.lng;
-      const directions = (lat && lng) ? getDirectionsUrl(lat, lng) : null;
-
-      const tagsHtml = (location.tags && location.tags.length)
-        ? `<p class="muted"><strong>Tags:</strong> ${location.tags.join(", ")}</p>`
-        : "";
-
-      details.innerHTML = `
-        <h3>${location.name}</h3>
-        ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ""}
-        ${tagsHtml}
-        ${location.url ? `<p><a href="${location.url}" target="_blank" rel="noopener noreferrer">Website</a></p>` : ""}
-        ${directions ? `<p><a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a></p>` : ""}
-        <p><strong>Cost / coverage notes:</strong> ${coverageText}</p>
-      `;
-    }
-
-    async function renderLocationsOnMap(matchingLocations, userSelections) {
+    async function renderLocationsOnMap(matchingLocations, onClickLocation) {
       initServiceMap();
       clearMarkers();
 
@@ -416,11 +423,7 @@
 
         const marker = L.marker([item.latLng.lat, item.latLng.lng]).addTo(serviceMap);
         marker.bindPopup(`<b>${item.loc.name}</b><br/><span class="muted">Click for details</span>`);
-        marker.on("click", () => {
-          showLocationDetails(item.loc, userSelections, item.latLng);
-          serviceMap.setView([item.latLng.lat, item.latLng.lng], 14);
-        });
-
+        marker.on("click", () => onClickLocation(item.loc, item.latLng));
         serviceMarkers.push(marker);
       }
 
@@ -434,12 +437,69 @@
     }
 
     /*************************************
-     * 4) FORM SUBMIT + PROBLEM DROPDOWN
+     * 4) “PAGES” (VIEW SWITCHING)
      *************************************/
-    const form = document.getElementById("healthcare-form");
-    const resultsDiv = document.getElementById("results");
+    const searchView = document.getElementById("search-view");
+    const detailsView = document.getElementById("details-view");
+    const detailsCard = document.getElementById("details-card");
+    const breadcrumb = document.getElementById("details-breadcrumb");
+    const backBtn = document.getElementById("back-btn");
 
-    // Show/hide the problem dropdown when "need" changes
+    // Saved state from the form (so details knows what user picked)
+    let lastUserSelections = null;
+    let lastNeedLabel = "";
+    let lastProblemLabel = "";
+
+    function openDetailsPage(location, latLng) {
+      if (!lastUserSelections) return;
+
+      const directions = (latLng && latLng.lat && latLng.lng) ? getDirectionsUrl(latLng.lat, latLng.lng) : null;
+      const coverageText = buildCoverageForDetails(lastUserSelections, location);
+
+      const servicesHtml = (location.servicesOffered && location.servicesOffered.length)
+        ? `<ul>${location.servicesOffered.map(s => `<li>${s}</li>`).join("")}</ul>`
+        : `<p class="muted"><em>(Add “servicesOffered” for this location later.)</em></p>`;
+
+      breadcrumb.textContent =
+        lastNeedLabel + (lastProblemLabel ? ` → ${lastProblemLabel}` : "");
+
+      detailsCard.innerHTML = `
+        <h2 style="margin-top:0;">${location.name}</h2>
+
+        ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ""}
+        ${location.url ? `<p><strong>Website:</strong> <a href="${location.url}" target="_blank" rel="noopener noreferrer">${location.url}</a></p>` : ""}
+        ${directions ? `<p><a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a></p>` : ""}
+
+        <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
+
+        <h3>Services offered</h3>
+        ${servicesHtml}
+
+        <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
+
+        <h3>Cost / coverage (based on your selections)</h3>
+        <p>${coverageText}</p>
+      `;
+
+      // switch views
+      searchView.style.display = "none";
+      detailsView.style.display = "block";
+
+      // optional: scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function backToResults() {
+      detailsView.style.display = "none";
+      searchView.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    backBtn.addEventListener("click", backToResults);
+
+    /*************************************
+     * 5) PROBLEM DROPDOWN
+     *************************************/
     const needSelect = document.getElementById("need");
     const problemWrapper = document.getElementById("problem-wrapper");
     const problemSelect = document.getElementById("problem");
@@ -450,7 +510,6 @@
       if (problemOptions[need]) {
         problemWrapper.style.display = "block";
         problemSelect.innerHTML = "";
-
         problemOptions[need].forEach(p => {
           const opt = document.createElement("option");
           opt.value = p.value;
@@ -462,27 +521,39 @@
         problemSelect.innerHTML = "";
       }
     }
-
     updateProblemDropdown();
     needSelect.addEventListener("change", updateProblemDropdown);
+
+    /*************************************
+     * 6) SUBMIT HANDLER
+     * (IMPORTANT: We do NOT display insurance coverage here)
+     *************************************/
+    const form = document.getElementById("healthcare-form");
+    const resultsDiv = document.getElementById("results");
 
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
       const residency = document.getElementById("residency").value;
       const need = needSelect.value;
-      const problem = (problemWrapper.style.display !== "none") ? problemSelect.value : "";
 
       const insurance = Array.from(
         document.querySelectorAll('input[name="insurance"]:checked')
       ).map((cb) => cb.value);
 
-      const userSelections = { residency, insurance };
+      // Save for the details page
+      lastUserSelections = { residency, insurance };
+      lastNeedLabel = needSelect.options[needSelect.selectedIndex].text;
 
-      const coverageText = getCoverageText(userSelections);
+      const problem = (problemWrapper.style.display !== "none") ? problemSelect.value : "";
+      lastProblemLabel = (need === "general" && problemSelect.options.length)
+        ? (problemSelect.options[problemSelect.selectedIndex]?.text || "")
+        : "";
 
+      // Filter resources for display (still ok to show these)
       const matchingResources = resources.filter(r => r.needs.includes(need));
 
+      // Filter locations (problem filter only for general)
       const matchingLocations = locations.filter(l => {
         if (!l.needs.includes(need)) return false;
 
@@ -494,30 +565,29 @@
         return true;
       });
 
-      const needLabel = needSelect.options[needSelect.selectedIndex].text;
-
-      let html = `<h2>Recommended Services for: ${needLabel}</h2>`;
-      html += `<p><strong>Coverage notes:</strong> ${coverageText}</p>`;
+      // Build results HTML (no coverage text here)
+      let html = `<h2>Results</h2>`;
+      html += `<p class="muted">Click a resource or location to see details.</p>`;
 
       if (need === "general" && problem) {
-        const problemLabel = problemSelect.options[problemSelect.selectedIndex]?.text || "";
-        html += `<p><strong>Selected category:</strong> ${problemLabel}</p>`;
+        html += `<p><strong>Selected category:</strong> ${lastProblemLabel}</p>`;
       }
 
       if (need === "urgent") {
         html += `
-          <div class="service">
+          <div class="card">
             <h3>Emergency note</h3>
             <p>If you are in immediate danger or experiencing a medical emergency, call 911 or go to the nearest emergency department.</p>
           </div>
         `;
       }
 
+      // Resources
       if (matchingResources.length) {
         html += `<h3>Resources</h3>`;
         matchingResources.forEach((r) => {
           html += `
-            <div class="service">
+            <div class="card">
               <h3>${r.name}</h3>
               <p>${r.description || ""}</p>
               ${r.url ? `<p><a href="${r.url}" target="_blank" rel="noopener noreferrer">Learn more</a></p>` : ""}
@@ -526,6 +596,7 @@
         });
       }
 
+      // Locations
       html += `<h3>Locations</h3>`;
       if (!matchingLocations.length) {
         html += `<p>No locations found for that selection.</p>`;
@@ -534,11 +605,15 @@
         return;
       }
 
+      // Show loading while geocoding + rendering pins
       resultsDiv.innerHTML = html + `<p class="muted">Loading map and locations…</p>`;
       showMapUI();
       initServiceMap();
 
-      const resolved = await renderLocationsOnMap(matchingLocations, userSelections);
+      // Render map pins + keep resolved coords so cards can open details with directions
+      const resolved = await renderLocationsOnMap(matchingLocations, (loc, latLng) => {
+        openDetailsPage(loc, latLng);
+      });
 
       let locationsHtml = "";
       resolved.forEach(({ loc, latLng }) => {
@@ -546,28 +621,24 @@
         const coordsNote = hasCoords ? "" : `<p class="muted"><em>(Pin not available yet — update the address or add coordinates.)</em></p>`;
 
         locationsHtml += `
-          <div class="service clickable" data-loc-id="${loc.id}">
+          <div class="card clickable" data-loc-id="${loc.id}">
             <h3>${loc.name}</h3>
             <p>${loc.address || ""}</p>
             ${coordsNote}
-            <p class="muted"><em>Click for details, costs, and coverage notes.</em></p>
+            <p class="muted"><em>Click to view details (website, services, coverage).</em></p>
           </div>
         `;
       });
 
       resultsDiv.innerHTML = html + locationsHtml;
 
+      // Clicking a card opens the details “page”
       document.querySelectorAll('[data-loc-id]').forEach(card => {
         card.addEventListener("click", () => {
           const id = card.getAttribute("data-loc-id");
           const item = resolved.find(x => x.loc.id === id);
           if (!item) return;
-
-          showLocationDetails(item.loc, userSelections, item.latLng);
-
-          if (item.latLng) {
-            serviceMap.setView([item.latLng.lat, item.latLng.lng], 14);
-          }
+          openDetailsPage(item.loc, item.latLng);
         });
       });
     });
