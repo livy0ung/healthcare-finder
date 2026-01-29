@@ -15,19 +15,10 @@
       margin: 2rem auto;
       line-height: 1.5;
     }
-    label {
-      display: block;
-      margin-top: 1rem;
-    }
-    select {
-      margin-top: 0.25rem;
-      padding: 0.25rem;
-    }
-    button {
-      margin-top: 1.5rem;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-    }
+    label { display: block; margin-top: 1rem; }
+    select { margin-top: 0.25rem; padding: 0.25rem; }
+    button { margin-top: 1.5rem; padding: 0.5rem 1rem; cursor: pointer; }
+
     .results {
       margin-top: 2rem;
       border-top: 1px solid #ccc;
@@ -40,35 +31,23 @@
       border-radius: 4px;
       background: #fff;
     }
-    .card h3 {
-      margin: 0 0 0.25rem 0;
-    }
-    .card p {
-      margin: 0.25rem 0;
-    }
-    input[type="checkbox"] {
-      margin-right: 0.5rem;
-    }
+    .card h3 { margin: 0 0 0.25rem 0; }
+    .card p { margin: 0.25rem 0; }
+
+    input[type="checkbox"] { margin-right: 0.5rem; }
+
     .helper {
       margin-top: 0.5rem;
       font-size: 0.95rem;
       color: #555;
     }
-    .muted {
-      color: #555;
-    }
-    .clickable {
-      cursor: pointer;
-    }
-    .clickable:hover {
-      border-color: #bbb;
-    }
+    .muted { color: #555; }
+
+    .clickable { cursor: pointer; }
+    .clickable:hover { border-color: #bbb; }
 
     /* Map */
-    #map-wrapper {
-      display: none; /* only show after results */
-      margin-top: 1rem;
-    }
+    #map-wrapper { display: none; margin-top: 1rem; }
     #service-map {
       height: 380px;
       border: 1px solid #ddd;
@@ -92,14 +71,41 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    .back-btn:hover {
-      border-color: #bbb;
+    .back-btn:hover { border-color: #bbb; }
+
+    /* Coverage table */
+    .coverage-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .coverage-table th,
+    .coverage-table td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #eee;
+      padding: 8px;
+    }
+    .coverage-table th {
+      border-bottom: 1px solid #ddd;
+      background: #fafafa;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border: 1px solid #eee;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: #555;
+      background: #fafafa;
+      margin-right: 0.5rem;
+      margin-top: 0.25rem;
     }
   </style>
 </head>
 
 <body>
-
   <!-- =========================
        VIEW 1: SEARCH + RESULTS
        ========================= -->
@@ -198,17 +204,12 @@
         url: "https://www.quebec.ca/en/health/finding-a-resource/info-sante-811",
         needs: ["urgent", "general", "mental", "sexual"],
         description: "Free phone line to connect with a nurse for non-urgent health advice (24/7)."
-      },
-      {
-        id: "mcgill-wellness-hub-resource",
-        name: "McGill Student Wellness Hub",
-        url: "https://www.mcgill.ca/wellness-hub/",
-        needs: ["general", "mental", "sexual"],
-        description: "Starting point for many McGill student health and wellness services."
       }
     ];
 
     // Locations = physical places, mapped
+    // NOTE: coverageByService is your “table data”.
+    // Keys are service names; values map insurance -> text (you can later change to exact %/$).
     const locations = [
       {
         id: "mgh-er",
@@ -217,6 +218,26 @@
         address: "1650 Cedar Ave, Montréal, QC H3G 1A4",
         url: "https://muhc.ca/montreal-general-hospital",
         servicesOffered: ["Emergency assessment", "Urgent imaging/referrals", "Hospital-based emergency care"],
+        coverageByService: {
+          "Emergency assessment": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary (may cover extras)"
+          },
+          "Urgent imaging/referrals": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          },
+          "Hospital-based emergency care": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          }
+        },
         tags: ["Emergency room"]
       },
       {
@@ -226,6 +247,20 @@
         address: "1001 Rue Sanguinet, Montréal, QC H2X 1R6",
         url: "https://www.chumontreal.qc.ca/le-chum-votre-hopital/nous-joindre",
         servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
+        coverageByService: {
+          "Emergency assessment": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary (may cover extras)"
+          },
+          "Hospital-based emergency care": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          }
+        },
         tags: ["Emergency room"]
       },
       {
@@ -235,6 +270,20 @@
         address: "3755 Chemin de la Côte-Sainte-Catherine, Montréal, QC H3T 1E2",
         url: "https://www.jgh.ca/care-services/emergency/",
         servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
+        coverageByService: {
+          "Emergency assessment": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          },
+          "Hospital-based emergency care": {
+            ramq: "Typically covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          }
+        },
         tags: ["Emergency room"]
       },
 
@@ -250,6 +299,26 @@
           "Navigation to McGill health services",
           "Wellness and mental health supports"
         ],
+        coverageByService: {
+          "Appointments/referrals (depending on service)": {
+            ramq: "Varies by service (often covered if RAMQ-eligible)",
+            other_prov: "Varies (reimbursement rules)",
+            bluecross: "Varies (check plan)",
+            ssmu: "Not primary (may help with some costs)"
+          },
+          "Navigation to McGill health services": {
+            ramq: "N/A (navigation/support)",
+            other_prov: "N/A (navigation/support)",
+            bluecross: "N/A (navigation/support)",
+            ssmu: "N/A (navigation/support)"
+          },
+          "Wellness and mental health supports": {
+            ramq: "Varies (service-dependent)",
+            other_prov: "Varies",
+            bluecross: "Varies",
+            ssmu: "May help with eligible services"
+          }
+        },
         tags: ["Student services"]
       },
       {
@@ -264,6 +333,26 @@
           "Illness/injury assessment (non-emergency)",
           "Basic prescriptions/refills (varies)"
         ],
+        coverageByService: {
+          "General medical appointments": {
+            ramq: "Often covered (if RAMQ-eligible & provider bills RAMQ)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          },
+          "Illness/injury assessment (non-emergency)": {
+            ramq: "Often covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          },
+          "Basic prescriptions/refills (varies)": {
+            ramq: "Drug coverage eligibility varies",
+            other_prov: "Varies by province",
+            bluecross: "Often covered (check plan)",
+            ssmu: "May help with eligible costs"
+          }
+        },
         tags: ["Example clinic", "Appointments / walk-in may vary"]
       },
       {
@@ -278,55 +367,32 @@
           "Illness assessment",
           "Referrals (varies by clinic)"
         ],
+        coverageByService: {
+          "General medical appointments": {
+            ramq: "Often covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          },
+          "Illness assessment": {
+            ramq: "Often covered (if eligible)",
+            other_prov: "Often reimbursed (varies)",
+            bluecross: "Often covered (check plan)",
+            ssmu: "Not primary"
+          },
+          "Referrals (varies by clinic)": {
+            ramq: "Often covered (service-dependent)",
+            other_prov: "Varies",
+            bluecross: "Varies",
+            ssmu: "N/A (usually)"
+          }
+        },
         tags: ["Example clinic", "Appointments / walk-in may vary"]
       }
     ];
 
-    /*************************************
-     * 1) COVERAGE / COST TEXT
-     * (Shown ONLY on the details page)
-     *************************************/
-    function buildCoverageForDetails({ residency, insurance }, location) {
-      const lines = [];
-
-      // general context
-      if (residency === "local") {
-        lines.push("Residency: In-province (QC). RAMQ often covers medically necessary physician/hospital services if you’re eligible.");
-      } else if (residency === "out") {
-        lines.push("Residency: Out-of-province. Your home provincial plan may reimburse care in Quebec; rules vary.");
-      } else if (residency === "international") {
-        lines.push("Residency: International. Coverage often depends on Blue Cross (if you’re enrolled) and what the provider accepts.");
-      }
-
-      if (!insurance.length || insurance.includes("none")) {
-        lines.push("Insurance: None / not sure. Call the clinic/hospital and ask what documents and payment methods they accept. If you’re a student, check Minerva/your tuition invoice to confirm coverage.");
-        return lines.join(" ");
-      }
-
-      const picked = [];
-      if (insurance.includes("ramq")) picked.push("RAMQ");
-      if (insurance.includes("other_prov")) picked.push("Other provincial/territorial");
-      if (insurance.includes("bluecross")) picked.push("Blue Cross");
-      if (insurance.includes("ssmu")) picked.push("SSMU/MCSS");
-
-      lines.push(`Insurance selected: ${picked.join(", ")}.`);
-
-      // location-type hints
-      if (location.needs.includes("urgent")) {
-        lines.push("Emergency departments generally provide care, but billing/eligibility can vary (especially if not RAMQ-covered). Bring ID/insurance documents if you have them.");
-      } else {
-        lines.push("For clinics, fees and coverage vary by provider and service type. Ask about the visit fee and whether they bill your insurer directly or require reimbursement.");
-      }
-
-      if (insurance.includes("ssmu")) {
-        lines.push("SSMU/MCSS may help with eligible costs that aren’t fully covered elsewhere (example: certain prescriptions or services). Check plan details for exact reimbursement.");
-      }
-
-      return lines.join(" ");
-    }
-
     /****************************************************
-     * 2) MAKE "NONE / NOT SURE" MUTUALLY EXCLUSIVE
+     * 1) “NONE / NOT SURE” MUTUALLY EXCLUSIVE
      ****************************************************/
     document.querySelectorAll('input[name="insurance"]').forEach((box) => {
       box.addEventListener("change", () => {
@@ -341,6 +407,83 @@
       });
     });
 
+    /****************************************************
+     * 2) COVERAGE TABLE HELPERS (only show selected columns)
+     ****************************************************/
+    function insuranceLabel(key) {
+      const labels = {
+        ramq: "RAMQ",
+        other_prov: "Other Provincial",
+        bluecross: "Blue Cross",
+        ssmu: "SSMU/MCSS"
+      };
+      return labels[key] || key;
+    }
+
+    function getSelectedInsuranceCols(insurance) {
+      // Only selected (as you requested)
+      if (!insurance || insurance.length === 0) return [];
+      if (insurance.includes("none")) return [];
+      return insurance.filter(x => x !== "none");
+    }
+
+    function buildCoverageTableHTML(location, selectedInsurance) {
+      const cols = getSelectedInsuranceCols(selectedInsurance);
+
+      if (cols.length === 0) {
+        return `
+          <p class="muted">
+            <em>No insurance selected (or “None / Not sure”). Select insurance on the first page to see coverage by plan.</em>
+          </p>
+        `;
+      }
+
+      const coverage = location.coverageByService || {};
+      const serviceNames = Object.keys(coverage);
+
+      // Fallback: if no coverageByService provided, build from servicesOffered with generic text
+      if (serviceNames.length === 0) {
+        const offered = Array.isArray(location.servicesOffered) ? location.servicesOffered : [];
+        if (offered.length === 0) {
+          return `<p class="muted"><em>No services listed yet for this location.</em></p>`;
+        }
+
+        let html = `<table class="coverage-table">`;
+        html += `<tr>
+          <th>Service</th>
+          ${cols.map(k => `<th>${insuranceLabel(k)}</th>`).join("")}
+        </tr>`;
+
+        offered.forEach(service => {
+          html += `<tr>
+            <td><strong>${service}</strong></td>
+            ${cols.map(() => `<td>Varies / check plan</td>`).join("")}
+          </tr>`;
+        });
+
+        html += `</table>`;
+        return html;
+      }
+
+      // Normal: use coverageByService data
+      let html = `<table class="coverage-table">`;
+      html += `<tr>
+        <th>Service</th>
+        ${cols.map(k => `<th>${insuranceLabel(k)}</th>`).join("")}
+      </tr>`;
+
+      serviceNames.forEach(serviceName => {
+        const planMap = coverage[serviceName] || {};
+        html += `<tr>
+          <td><strong>${serviceName}</strong></td>
+          ${cols.map(k => `<td>${planMap[k] ?? "Varies / check plan"}</td>`).join("")}
+        </tr>`;
+      });
+
+      html += `</table>`;
+      return html;
+    }
+
     /*************************************
      * 3) MAP
      *************************************/
@@ -348,12 +491,8 @@
     let serviceMarkers = [];
     const geocodeCache = new Map(); // address -> {lat, lng}
 
-    function showMapUI() {
-      document.getElementById("map-wrapper").style.display = "block";
-    }
-    function hideMapUI() {
-      document.getElementById("map-wrapper").style.display = "none";
-    }
+    function showMapUI() { document.getElementById("map-wrapper").style.display = "block"; }
+    function hideMapUI() { document.getElementById("map-wrapper").style.display = "none"; }
 
     function initServiceMap() {
       if (serviceMap) return;
@@ -454,17 +593,22 @@
       if (!lastUserSelections) return;
 
       const directions = (latLng && latLng.lat && latLng.lng) ? getDirectionsUrl(latLng.lat, latLng.lng) : null;
-      const coverageText = buildCoverageForDetails(lastUserSelections, location);
-
-      const servicesHtml = (location.servicesOffered && location.servicesOffered.length)
-        ? `<ul>${location.servicesOffered.map(s => `<li>${s}</li>`).join("")}</ul>`
-        : `<p class="muted"><em>(Add “servicesOffered” for this location later.)</em></p>`;
 
       breadcrumb.textContent =
         lastNeedLabel + (lastProblemLabel ? ` → ${lastProblemLabel}` : "");
 
+      const selectedCols = getSelectedInsuranceCols(lastUserSelections.insurance);
+      const selectedBadges = selectedCols.length
+        ? selectedCols.map(k => `<span class="pill">${insuranceLabel(k)}</span>`).join("")
+        : `<span class="pill">No insurance selected</span>`;
+
+      // Build the table HTML (only selected columns)
+      const tableHtml = buildCoverageTableHTML(location, lastUserSelections.insurance);
+
       detailsCard.innerHTML = `
         <h2 style="margin-top:0;">${location.name}</h2>
+
+        <div>${selectedBadges}</div>
 
         ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ""}
         ${location.url ? `<p><strong>Website:</strong> <a href="${location.url}" target="_blank" rel="noopener noreferrer">${location.url}</a></p>` : ""}
@@ -472,20 +616,17 @@
 
         <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
 
-        <h3>Services offered</h3>
-        ${servicesHtml}
+        <h3>Services + Coverage (based on your selections)</h3>
+        ${tableHtml}
 
-        <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
-
-        <h3>Cost / coverage (based on your selections)</h3>
-        <p>${coverageText}</p>
+        <p class="muted" style="margin-top:0.75rem;">
+          These are starter placeholders. Coverage can vary by eligibility, provider billing, and plan rules—confirm with the clinic and your plan.
+        </p>
       `;
 
       // switch views
       searchView.style.display = "none";
       detailsView.style.display = "block";
-
-      // optional: scroll to top
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -526,7 +667,7 @@
 
     /*************************************
      * 6) SUBMIT HANDLER
-     * (IMPORTANT: We do NOT display insurance coverage here)
+     * (No coverage shown on results page)
      *************************************/
     const form = document.getElementById("healthcare-form");
     const resultsDiv = document.getElementById("results");
@@ -541,7 +682,7 @@
         document.querySelectorAll('input[name="insurance"]:checked')
       ).map((cb) => cb.value);
 
-      // Save for the details page
+      // Save for details page
       lastUserSelections = { residency, insurance };
       lastNeedLabel = needSelect.options[needSelect.selectedIndex].text;
 
@@ -550,10 +691,8 @@
         ? (problemSelect.options[problemSelect.selectedIndex]?.text || "")
         : "";
 
-      // Filter resources for display (still ok to show these)
       const matchingResources = resources.filter(r => r.needs.includes(need));
 
-      // Filter locations (problem filter only for general)
       const matchingLocations = locations.filter(l => {
         if (!l.needs.includes(need)) return false;
 
@@ -565,7 +704,6 @@
         return true;
       });
 
-      // Build results HTML (no coverage text here)
       let html = `<h2>Results</h2>`;
       html += `<p class="muted">Click a resource or location to see details.</p>`;
 
@@ -582,7 +720,6 @@
         `;
       }
 
-      // Resources
       if (matchingResources.length) {
         html += `<h3>Resources</h3>`;
         matchingResources.forEach((r) => {
@@ -596,7 +733,6 @@
         });
       }
 
-      // Locations
       html += `<h3>Locations</h3>`;
       if (!matchingLocations.length) {
         html += `<p>No locations found for that selection.</p>`;
@@ -605,12 +741,10 @@
         return;
       }
 
-      // Show loading while geocoding + rendering pins
       resultsDiv.innerHTML = html + `<p class="muted">Loading map and locations…</p>`;
       showMapUI();
       initServiceMap();
 
-      // Render map pins + keep resolved coords so cards can open details with directions
       const resolved = await renderLocationsOnMap(matchingLocations, (loc, latLng) => {
         openDetailsPage(loc, latLng);
       });
@@ -632,7 +766,6 @@
 
       resultsDiv.innerHTML = html + locationsHtml;
 
-      // Clicking a card opens the details “page”
       document.querySelectorAll('[data-loc-id]').forEach(card => {
         card.addEventListener("click", () => {
           const id = card.getAttribute("data-loc-id");
