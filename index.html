@@ -7,102 +7,7 @@
   <!-- Leaflet (free map library) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 2rem auto;
-      line-height: 1.5;
-    }
-    label { display: block; margin-top: 1rem; }
-    select { margin-top: 0.25rem; padding: 0.25rem; }
-    button { margin-top: 1.5rem; padding: 0.5rem 1rem; cursor: pointer; }
-
-    .results {
-      margin-top: 2rem;
-      border-top: 1px solid #ccc;
-      padding-top: 1.5rem;
-    }
-    .card {
-      margin-bottom: 1rem;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #fff;
-    }
-    .card h3 { margin: 0 0 0.25rem 0; }
-    .card p { margin: 0.25rem 0; }
-
-    input[type="checkbox"] { margin-right: 0.5rem; }
-
-    .helper {
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
-      color: #555;
-    }
-    .muted { color: #555; }
-
-    .clickable { cursor: pointer; }
-    .clickable:hover { border-color: #bbb; }
-
-    /* Map */
-    #map-wrapper { display: none; margin-top: 1rem; }
-    #service-map {
-      height: 380px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-    }
-
-    /* “Pages” (views) */
-    #search-view { display: block; }
-    #details-view { display: none; }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .back-btn {
-      padding: 0.4rem 0.75rem;
-      border: 1px solid #ddd;
-      background: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .back-btn:hover { border-color: #bbb; }
-
-    /* Coverage table */
-    .coverage-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
-    }
-    .coverage-table th,
-    .coverage-table td {
-      text-align: left;
-      vertical-align: top;
-      border-bottom: 1px solid #eee;
-      padding: 8px;
-    }
-    .coverage-table th {
-      border-bottom: 1px solid #ddd;
-      background: #fafafa;
-    }
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border: 1px solid #eee;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: #555;
-      background: #fafafa;
-      margin-right: 0.5rem;
-      margin-top: 0.25rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -127,6 +32,7 @@
       <label><input type="checkbox" name="insurance" value="bluecross" />Blue Cross (International students)</label>
       <label><input type="checkbox" name="insurance" value="ssmu" />Undergraduate Supplemental Insurance Plan (SSMU or MCSS)</label>
       <label><input type="checkbox" name="insurance" value="none" />None / Not sure</label>
+
 
       <p class="helper">
         To know if you are enrolled in the SSMU or MCSS plan at McGill, check your tuition invoice on Minerva for a
