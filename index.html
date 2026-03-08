@@ -24,14 +24,18 @@
         <option value="international">International</option>
       </select>
 
-      <label>What health insurance coverage do you have? (Select all that apply)</label>
-
-      <label><input type="checkbox" name="insurance" value="ramq" />Quebec provincial insurance (RAMQ)</label>
-      <label><input type="checkbox" name="insurance" value="other_prov" />Other provincial/territorial health insurance (For Canadian residents from outside Quebec)</label>
-      <label><input type="checkbox" name="insurance" value="bluecross" />Blue Cross (International students)</label>
-      <label><input type="checkbox" name="insurance" value="ssmu" />Undergraduate Supplemental Insurance Plan (SSMU or MCSS)</label>
-      <label><input type="checkbox" name="insurance" value="none" />None / Not sure</label>
-
+      <label for="primary-insurance">Primary health insurance</label>
+      <select id="primary-insurance" name="primary-insurance" disabled>
+        <option value="ramq">Quebec provincial insurance (RAMQ)</option>
+        <option value="other_prov">Other provincial/territorial health insurance</option>
+        <option value="bluecross">Blue Cross (International students)</option>
+      </select>
+      
+      <label for="ssmu">Do you have the Undergraduate Supplemental Insurance Plan (SSMU or MCSS)?</label>
+      <select id="ssmu" name="ssmu">
+        <option value="no">No / Not sure</option>
+        <option value="yes">Yes</option>
+      </select>
 
       <p class="helper">
         To know if you are enrolled in the SSMU or MCSS plan at McGill, check your tuition invoice on Minerva for a

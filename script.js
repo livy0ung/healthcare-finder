@@ -1,6 +1,28 @@
  /***********************
      * 0) DATA (EDIT LATER)
      ***********************/
+ 
+ const residencySelect = document.getElementById("residency");
+const primaryInsuranceSelect = document.getElementById("primary-insurance");
+const ssmuSelect = document.getElementById("ssmu");
+
+function updatePrimaryInsurance() {
+  const residency = residencySelect.value;
+
+  if (residency === "local") {
+    primaryInsuranceSelect.value = "ramq";
+  } else if (residency === "out") {
+    primaryInsuranceSelect.value = "other_prov";
+  } else if (residency === "international") {
+    primaryInsuranceSelect.value = "bluecross";
+  }
+}
+
+updatePrimaryInsurance();
+residencySelect.addEventListener("change", updatePrimaryInsurance);
+ 
+ 
+ 
  const problemOptions = {
     general: [
       { value: "minor_illness", label: "Minor illness (cold, flu, sore throat, fever)" },
@@ -219,19 +241,7 @@
   /****************************************************
    * 1) “NONE / NOT SURE” MUTUALLY EXCLUSIVE
    ****************************************************/
-  document.querySelectorAll('input[name="insurance"]').forEach((box) => {
-    box.addEventListener("change", () => {
-      const noneBox = document.querySelector('input[name="insurance"][value="none"]');
-      const checkedBoxes = Array.from(document.querySelectorAll('input[name="insurance"]:checked'));
-
-      if (box.value === "none" && box.checked) {
-        checkedBoxes.forEach((cb) => { if (cb.value !== "none") cb.checked = false; });
-      } else if (checkedBoxes.some((cb) => cb.value !== "none")) {
-        noneBox.checked = false;
-      }
-    });
-  });
-
+  
   /****************************************************
    * 2) COVERAGE TABLE HELPERS (only show selected columns)
    ****************************************************/
@@ -502,11 +512,12 @@
 
     const residency = document.getElementById("residency").value;
     const need = needSelect.value;
+    const insurance = [primaryInsuranceSelect.value];
 
-    const insurance = Array.from(
-      document.querySelectorAll('input[name="insurance"]:checked')
-    ).map((cb) => cb.value);
-
+    if (ssmuSelect.value === "yes") {
+      insurance.push("ssmu");
+    }
+    
     // Save for details page
     lastUserSelections = { residency, insurance };
     lastNeedLabel = needSelect.options[needSelect.selectedIndex].text;
