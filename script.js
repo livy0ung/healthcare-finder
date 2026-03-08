@@ -3,24 +3,25 @@
      ***********************/
  
  const residencySelect = document.getElementById("residency");
-const primaryInsuranceSelect = document.getElementById("primary-insurance");
-const ssmuSelect = document.getElementById("ssmu");
-
-function updatePrimaryInsurance() {
-  const residency = residencySelect.value;
-
-  if (residency === "local") {
-    primaryInsuranceSelect.value = "ramq";
-  } else if (residency === "out") {
-    primaryInsuranceSelect.value = "other_prov";
-  } else if (residency === "international") {
-    primaryInsuranceSelect.value = "bluecross";
-  }
-}
-
-updatePrimaryInsurance();
-residencySelect.addEventListener("change", updatePrimaryInsurance);
+ const primaryInsuranceSelect = document.getElementById("primary-insurance");
+ const ssmuSelect = document.getElementById("ssmu");
  
+ function getPrimaryInsuranceFromResidency(residency) {
+   if (residency === "local") return "ramq";
+   if (residency === "out") return "other_prov";
+   if (residency === "international") return "bluecross";
+   return "ramq";
+ }
+ 
+ function updatePrimaryInsurance() {
+   const residency = residencySelect.value;
+   const insuranceValue = getPrimaryInsuranceFromResidency(residency);
+   primaryInsuranceSelect.value = insuranceValue;
+ }
+ 
+ updatePrimaryInsurance();
+ residencySelect.addEventListener("change", updatePrimaryInsurance);
+ residencySelect.addEventListener("input", updatePrimaryInsurance);
  
  
  const problemOptions = {
@@ -510,14 +511,15 @@ residencySelect.addEventListener("change", updatePrimaryInsurance);
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const residency = document.getElementById("residency").value;
-    const need = needSelect.value;
-    const insurance = [primaryInsuranceSelect.value];
+const residency = document.getElementById("residency").value;
+const need = needSelect.value;
 
-    if (ssmuSelect.value === "yes") {
-      insurance.push("ssmu");
-    }
-    
+const insurance = [getPrimaryInsuranceFromResidency(residency)];
+
+if (ssmuSelect.value === "yes") {
+  insurance.push("ssmu");
+}
+
     // Save for details page
     lastUserSelections = { residency, insurance };
     lastNeedLabel = needSelect.options[needSelect.selectedIndex].text;
