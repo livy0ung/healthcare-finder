@@ -65,6 +65,7 @@
       needs: ["urgent"],
       address: "1650 Cedar Ave, Montréal, QC H3G 1A4",
       url: "https://muhc.ca/montreal-general-hospital",
+      waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
       servicesOffered: ["Emergency assessment", "Urgent imaging/referrals", "Hospital-based emergency care"],
       coverageByService: {
         "Emergency assessment": {
@@ -94,6 +95,7 @@
       needs: ["urgent"],
       address: "1001 Rue Sanguinet, Montréal, QC H2X 1R6",
       url: "https://www.chumontreal.qc.ca/le-chum-votre-hopital/nous-joindre",
+      waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
       servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
       coverageByService: {
         "Emergency assessment": {
@@ -117,6 +119,7 @@
       needs: ["urgent"],
       address: "3755 Chemin de la Côte-Sainte-Catherine, Montréal, QC H3T 1E2",
       url: "https://www.jgh.ca/care-services/emergency/",
+      waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
       servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
       coverageByService: {
         "Emergency assessment": {
@@ -142,6 +145,7 @@
       problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
       address: "McGill Downtown Campus, Montréal, QC",
       url: "https://www.mcgill.ca/wellness-hub/",
+    
       servicesOffered: [
         "Appointments/referrals (depending on service)",
         "Navigation to McGill health services",
@@ -448,6 +452,7 @@
 
       ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ""}
       ${location.url ? `<p><strong>Website:</strong> <a href="${location.url}" target="_blank" rel="noopener noreferrer">${location.url}</a></p>` : ""}
+      ${location.waitTimesUrl ? `<p><a href="${location.waitTimesUrl}" target="_blank">Check emergency room wait times</a></p>` : ""}
       ${directions ? `<p><a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a></p>` : ""}
 
       <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
