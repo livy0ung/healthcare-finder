@@ -670,7 +670,7 @@ if (ssmuSelect.value === "yes") {
     }
 
     if (matchingResources.length) {
-      html += `<h3>Virtual Resources</h3>`;
+      html += `<h3>Virtual Care</h3>`;
       matchingResources.forEach((r) => {
         html += `
           <div class="card">
@@ -682,7 +682,7 @@ if (ssmuSelect.value === "yes") {
       });
     }
 
-    html += `<h3>Locations</h3>`;
+    html += `<h3>In Person Care</h3>`;
     if (!matchingLocations.length) {
       html += `<p>No locations found for that selection.</p>`;
       resultsDiv.innerHTML = html;
