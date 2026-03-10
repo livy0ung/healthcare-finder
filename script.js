@@ -45,7 +45,7 @@
   };
 
   // Resources = informational, not mapped
-  const resources = [
+  const virtualresources = [
     {
       id: "info-sante-811",
       name: "Info-Santé 811",
@@ -640,7 +640,7 @@ if (ssmuSelect.value === "yes") {
       ? (problemSelect.options[problemSelect.selectedIndex]?.text || "")
       : "";
 
-    const matchingResources = resources.filter(r => r.needs.includes(need));
+    const matchingResources = virtualresources.filter(r => r.needs.includes(need));
 
     const matchingLocations = locations.filter(l => {
       if (!l.needs.includes(need)) return false;
@@ -670,7 +670,7 @@ if (ssmuSelect.value === "yes") {
     }
 
     if (matchingResources.length) {
-      html += `<h3>Resources</h3>`;
+      html += `<h3>Virtual Resources</h3>`;
       matchingResources.forEach((r) => {
         html += `
           <div class="card">
