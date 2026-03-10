@@ -92,3 +92,51 @@ input[type="checkbox"] { margin-right: 0.5rem; }
   margin-right: 0.5rem;
   margin-top: 0.25rem;
 }
+
+.marker-pin {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 4px rgba(0,0,0,0.35);
+  }
+  
+  .marker-public {
+    background: #2e7d32; /* green */
+  }
+  
+  .marker-private {
+    background: #c62828; /* red */
+  }
+  
+  .map-legend {
+    background: white;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    line-height: 1.5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    font-size: 14px;
+  }
+  
+  .map-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  
+  .map-legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #999;
+  }
+  
+  .map-legend-public {
+    background: #2e7d32;
+  }
+  
+  .map-legend-private {
+    background: #c62828;
+  }

@@ -63,6 +63,7 @@
       id: "mgh-er",
       name: "Montreal General Hospital (MUHC) – Emergency",
       needs: ["urgent"],
+      clinicType: "public", 
       lat: 45.4969179,
       lng: -73.5887870,
       address: "1650 Cedar Ave, Montréal, QC, Canada",
@@ -95,6 +96,7 @@
       id: "chum-er",
       name: "CHUM – Emergency",
       needs: ["urgent"],
+      clinicType: "public", 
       lat: 45.5119139,
       lng: -73.5567639,
       address: "1001 Rue Sanguinet, Montréal, QC, Canada",
@@ -121,6 +123,7 @@
       id: "jgh-er",
       name: "Jewish General Hospital – Emergency",
       needs: ["urgent"],
+      clinicType: "public", 
       lat: 45.497927,
       lng: -73.628881,
       address: "3755 Chemin de la Côte-Sainte-Catherine, Montréal, QC",
@@ -148,6 +151,7 @@
       id: "mcgill-wellness-hub",
       name: "McGill Student Wellness Hub",
       needs: ["general", "mental", "sexual"],
+      clinicType: "public", 
       problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
       lat: 45.50298,
       lng: -73.58003,
@@ -185,6 +189,7 @@
       id: "centre-medical-decelles",
       name: "Centre Médicale Décelles (Example clinic)",
       needs: ["general"],
+      clinicType: "private", 
       problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
       address: "6900 Ave Decarie, Montréal, QC",
       url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
@@ -219,6 +224,7 @@
       id: "cura-sante",
       name: "Cura Santé (Example clinic)",
       needs: ["general"],
+      clinicType: "private", 
       problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
       address: "5515 Rue Saint-Jacques, Montréal, QC",
       url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
@@ -341,7 +347,19 @@
 
   function showMapUI() { document.getElementById("map-wrapper").style.display = "block"; }
   function hideMapUI() { document.getElementById("map-wrapper").style.display = "none"; }
-
+  
+  function createMarkerIcon(clinicType) {
+    const typeClass = clinicType === "private" ? "marker-private" : "marker-public";
+  
+    return L.divIcon({
+      className: "",
+      html: `<div class="marker-pin ${typeClass}"></div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+      popupAnchor: [0, -10]
+    });
+  }
+  
   function initServiceMap() {
     if (serviceMap) return;
 
@@ -354,6 +372,25 @@
 
     const mcgillMarker = L.marker([MCGILL_CENTER.lat, MCGILL_CENTER.lng]).addTo(serviceMap);
     mcgillMarker.bindPopup(`<b>${MCGILL_CENTER.name}</b>`);
+    const legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "map-legend");
+    div.innerHTML = `
+    <strong>Clinic type</strong>
+    <div class="map-legend-row">
+      <span class="map-legend-swatch map-legend-public"></span>
+      <span>Public</span>
+    </div>
+    <div class="map-legend-row">
+      <span class="map-legend-swatch map-legend-private"></span>
+      <span>Private</span>
+    </div>
+  `;
+  return div;
+};
+ 
+ legend.addTo(serviceMap);
   }
 
   function clearMarkers() {
@@ -408,7 +445,10 @@
 
       boundsPoints.push([item.latLng.lat, item.latLng.lng]);
 
-      const marker = L.marker([item.latLng.lat, item.latLng.lng]).addTo(serviceMap);
+      const marker = L.marker(
+        [item.latLng.lat, item.latLng.lng],
+        { icon: createMarkerIcon(item.loc.clinicType) }
+      ).addTo(serviceMap);
       marker.bindPopup(`<b>${item.loc.name}</b><br/><span class="muted">Click for details</span>`);
       marker.on("click", () => onClickLocation(item.loc, item.latLng));
       serviceMarkers.push(marker);
@@ -462,7 +502,7 @@
       ${location.url ? `<p><strong>Website:</strong> <a href="${location.url}" target="_blank" rel="noopener noreferrer">${location.url}</a></p>` : ""}
       ${location.waitTimesUrl ? `<p><a href="${location.waitTimesUrl}" target="_blank">Check emergency room wait times</a></p>` : ""}
       ${directions ? `<p><a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a></p>` : ""}
-
+      ${location.clinicType ? `<p><strong>Clinic type:</strong> ${location.clinicType.charAt(0).toUpperCase() + location.clinicType.slice(1)}</p>` : ""}
       <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
 
       <h3>Services + Coverage (based on your selections)</h3>
