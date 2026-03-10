@@ -502,7 +502,7 @@
       ${location.url ? `<p><strong>Website:</strong> <a href="${location.url}" target="_blank" rel="noopener noreferrer">${location.url}</a></p>` : ""}
       ${location.waitTimesUrl ? `<p><a href="${location.waitTimesUrl}" target="_blank">Check emergency room wait times</a></p>` : ""}
       ${directions ? `<p><a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a></p>` : ""}
-      ${location.clinicType ? `<p><strong>Clinic type:</strong> ${location.clinicType.charAt(0).toUpperCase() + location.clinicType.slice(1)}</p>` : ""}
+      ${location.clinicType ? `<p><strong>Service type:</strong> ${location.clinicType.charAt(0).toUpperCase() + location.clinicType.slice(1)}</p>` : ""}
       <hr style="border:none;border-top:1px solid #eee;margin:1rem 0;" />
 
       <h3>Services + Coverage (based on your selections)</h3>
