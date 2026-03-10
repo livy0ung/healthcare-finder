@@ -63,7 +63,7 @@
       id: "mgh-er",
       name: "Montreal General Hospital (MUHC) – Emergency",
       needs: ["urgent"],
-      address: "1650 Cedar Ave, Montréal, QC H3G 1A4",
+      address: "1650 Cedar Ave, Montréal, QC, Canada",
       url: "https://muhc.ca/montreal-general-hospital",
       waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
       servicesOffered: ["Emergency assessment", "Urgent imaging/referrals", "Hospital-based emergency care"],
@@ -93,7 +93,7 @@
       id: "chum-er",
       name: "CHUM – Emergency",
       needs: ["urgent"],
-      address: "1001 Rue Sanguinet, Montréal, QC H2X 1R6",
+      address: "1001 Rue Sanguinet, Montréal, QC, Canada",
       url: "https://www.chumontreal.qc.ca/le-chum-votre-hopital/nous-joindre",
       waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
       servicesOffered: ["Emergency assessment", "Hospital-based emergency care"],
@@ -143,7 +143,7 @@
       name: "McGill Student Wellness Hub",
       needs: ["general", "mental", "sexual"],
       problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
-      address: "1070 Av. du Docteur-Penfield, Montréal, QC H3A 1W9",
+      address: "1070 Av. du Docteur-Penfield, Montréal, QC, Canada",
       url: "https://www.mcgill.ca/wellness-hub/",
     
       servicesOffered: [
