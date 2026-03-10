@@ -186,6 +186,64 @@
       tags: ["Student services"]
     },
     {
+        id: "clinique-sans-rdv",
+        name: "Clinique Sans RDV",
+        needs: ["general"],
+        clinicType: "private", 
+        lat: 45.5015,
+        lng: -73.5684,
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
+        address: "1191, Avenue Union, Montréal, QC",
+        url: "https://cliniquesansrdv.ca/en/clinics/walk-in-clinic-montreal/",
+        servicesOffered: [
+          "Minor illness",
+          "Ongoing pain",
+          "Skin concerns",
+          "Stomach or digestive issues",
+          "Medication questions or refills",
+          "Doctors notes/forms",
+        ],
+        coverageByService: {
+          "Minor illness": {
+            ramq: "No coverage",
+            other_prov: "No coverage",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Ongoing pain": {
+            ramq: "No coverage",
+            other_prov: "No coverage",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+         "Skin concerns": {
+            ramq: "No coverage",
+            other_prov: "No coverage",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Stomach or digestive issues": {
+            ramq: "No coverage",
+            other_prov: "No coverage",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Medication questions/refills": {
+            ramq: "No coverage",
+            other_prov: "No coverage",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Doctor's notes/forms": {
+            ramq: "No coverage",
+            other_prov: "No coverage",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+        },
+        tags: ["Example clinic", "Appointments / walk-in may vary"]
+      },
+    {
       id: "centre-medical-decelles",
       name: "Centre Médicale Décelles (Example clinic)",
       needs: ["general"],
