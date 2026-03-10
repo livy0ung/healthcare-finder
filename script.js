@@ -377,7 +377,7 @@
     legend.onAdd = function () {
     const div = L.DomUtil.create("div", "map-legend");
     div.innerHTML = `
-    <strong>Clinic type</strong>
+    <strong>Service type</strong>
     <div class="map-legend-row">
       <span class="map-legend-swatch map-legend-public"></span>
       <span>Public</span>
