@@ -567,7 +567,7 @@
       ${tableHtml}
 
       <p class="muted" style="margin-top:0.75rem;">
-        These are starter placeholders. Coverage can vary by eligibility, provider billing, and plan rules—confirm with the clinic and your plan.
+       Coverage can vary by eligibility, provider billing, and plan rules—confirm with the clinic and your plan.
       </p>
     `;
 
