@@ -143,7 +143,7 @@
       name: "McGill Student Wellness Hub",
       needs: ["general", "mental", "sexual"],
       problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
-      address: "1070 Av. du Docteur-Penfield, Montréal, QC, Canada",
+      address: "1070 Ave du Docteur-Penfield, Montréal, QC",
       url: "https://www.mcgill.ca/wellness-hub/",
     
       servicesOffered: [
