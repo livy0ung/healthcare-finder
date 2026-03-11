@@ -1,4 +1,4 @@
-console.log("NEW SCRIPT LOADED"); 
+
  
  /*************************************
  * 1) DOM ELEMENTS
@@ -34,10 +34,10 @@ function updatePrimaryInsurance() {
 
 function insuranceLabel(key) {
   const labels = {
-    ramq: "RAMQ",
-    other_prov: "Other Provincial",
-    bluecross: "Blue Cross",
-    ssmu: "SSMU/MCSS"
+    ramq: "RAMQ Coverage",
+    other_prov: "Other Provincial Insurance Coverage",
+    bluecross: "Blue Cross Coverage",
+    ssmu: "SSMU/MCSS Coverage"
   };
   return labels[key] || key;
 }
@@ -628,7 +628,7 @@ function openDetailsPage(location, latLng) {
     <h3>Services + Coverage (based on your selections)</h3>
     ${tableHtml}
     <p class="muted" style="margin-top:0.75rem;">
-      Coverage can vary by eligibility, provider billing, and plan rules—confirm with the clinic and your plan.
+      Coverage may vary—confirm with the clinic and your plan provider.
     </p>
   `;
 
