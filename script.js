@@ -58,6 +58,7 @@
       name: "Dialogue",
       url: "https://studentcare.ca/rte/en/McGillUniversityundergraduatestudentsSSMU_Dialogue_Dialogue",
       needs: ["urgent", "general", "mental", "sexual"],
+      acceptedInsurance: ["ramq","other_prov","ssmu"],
       description: "An online platform that allows you to virtually connect with nurses and physicians via a mobile or web app from anywhere in Canada, free of charge."
     },
     {
@@ -65,6 +66,7 @@
         name: "Maple",
         url: "https://www.mcgill.ca/internationalstudents/health/benefits/maple-virtual-care",
         needs: ["urgent", "general", "mental", "sexual"],
+        acceptedInsurance: ["bluecross"], 
         description: "24/7 on-demand access to doctors by secure text or video for advice, diagnosis and prescriptions, free of charge."
       },
       {
@@ -672,16 +674,30 @@ if (ssmuSelect.value === "yes") {
 
     const matchingResources = virtualresources.filter(r => r.needs.includes(need));
 
+    // Filter locations based on need, insurance
     const matchingLocations = locations.filter(l => {
-      if (!l.needs.includes(need)) return false;
 
-      if (need === "general") {
-        if (!problem) return true;
-        if (!l.problems) return true;
-        return l.problems.includes(problem);
-      }
-      return true;
-    });
+        // match healthcare need
+        if (!l.needs.includes(need)) return false;
+      
+        // match general health sub-category
+        if (need === "general") {
+          if (problem && l.problems && !l.problems.includes(problem)) {
+            return false;
+          }
+        }
+      
+        // insurance filtering
+        if (l.acceptedInsurance) {
+          const hasMatchingInsurance = l.acceptedInsurance.some(ins =>
+            insurance.includes(ins)
+          );
+      
+          if (!hasMatchingInsurance) return false;
+        }
+      
+        return true;
+      });
 
     let html = `<h2>Results</h2>`;
     html += `<p class="muted">Click a resource or location to see details.</p>`;
