@@ -52,8 +52,29 @@
       url: "https://www.quebec.ca/en/health/finding-a-resource/info-sante-811",
       needs: ["urgent", "general", "mental", "sexual"],
       description: "Free phone line to connect with a nurse for non-urgent health advice (24/7)."
-    }
-  ];
+    },
+    {
+      id: "Dialogue",
+      name: "Dialogue",
+      url: "https://studentcare.ca/rte/en/McGillUniversityundergraduatestudentsSSMU_Dialogue_Dialogue",
+      needs: ["urgent", "general", "mental", "sexual"],
+      description: "An online platform that allows you to virtually connect with nurses and physicians via a mobile or web app from anywhere in Canada, free of charge."
+    },
+    {
+        id: "Maple",
+        name: "Maple",
+        url: "https://www.mcgill.ca/internationalstudents/health/benefits/maple-virtual-care",
+        needs: ["urgent", "general", "mental", "sexual"],
+        description: "24/7 on-demand access to doctors by secure text or video for advice, diagnosis and prescriptions, free of charge."
+      },
+      {
+        id: "GuardMe",
+        name: "GuardMe",
+        url: "https://studentsupport.telushealth.com/gmssp/ca/home",
+        needs: ["mental"],
+        description: "A mental health counselling service that provides 24/7 access to licensed counsellors through telephone or mobile chat, free of charge"
+      }
+];
 
   // Locations = physical places, mapped
   // NOTE: coverageByService is your “table data”.
@@ -146,7 +167,7 @@
       },
       tags: ["Emergency room"]
     },
-
+// General heath clinics
     {
       id: "mcgill-wellness-hub",
       name: "McGill Student Wellness Hub",
@@ -244,81 +265,74 @@
         tags: ["Example clinic", "Appointments / walk-in may vary"]
       },
     {
-      id: "centre-medical-decelles",
-      name: "Centre Médicale Décelles (Example clinic)",
-      needs: ["general"],
-      clinicType: "private", 
-      problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
-      address: "6900 Ave Decarie, Montréal, QC",
-      url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
-      servicesOffered: [
-        "General medical appointments",
-        "Illness/injury assessment (non-emergency)",
-        "Basic prescriptions/refills (varies)"
-      ],
-      coverageByService: {
-        "General medical appointments": {
-          ramq: "Often covered (if RAMQ-eligible & provider bills RAMQ)",
-          other_prov: "Often reimbursed (varies)",
-          bluecross: "Often covered (check plan)",
-          ssmu: "Not primary"
+        id: "GMF Metro Médic Centre-Ville",
+        name: "GMF Metro Médic Centre-Ville",
+        needs: ["general"],
+        clinicType: "public", 
+        lat: 45.5043144,
+        lng: -73.5721130,
+        problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
+        address: "2020 Robert-Bourassa Blvd, Suite 1920, Montreal, QC",
+        url: "https://cliniquesansrdv.ca/en/clinics/walk-in-clinic-montreal/",
+        otherProvDisclaimer: "Your home province may only reimburse up to the amount it would have paid for the same service at home. If this clinic charges more, you may have to pay the difference yourself.",
+        servicesOffered: [
+          "Minor illness",
+          "Ongoing pain",
+          "Skin concerns",
+          "Stomach or digestive issues",
+          "Medication questions or refills",
+          "Doctors notes/forms", 
+          "Laboratory and diagnostic services"
+        ],
+        coverageByService: {
+          "Minor illness": {
+            ramq: "Covered",
+            other_prov: "Covered, must pay upfront and submit receipts for reimbursement", 
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Ongoing pain": {
+            ramq: "No coverage",
+            other_prov: "Covered, must pay upfront and submit receipts for reimbursement",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+         "Skin concerns": {
+            ramq: "No coverage",
+            other_prov: "Covered, must pay upfront and submit receipts for reimbursement",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Stomach or digestive issues": {
+            ramq: "No coverage",
+            other_prov: "Covered, must pay upfront and submit receipts for reimbursement",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Medication questions/refills": {
+            ramq: "No coverage",
+            other_prov: "Covered, must pay upfront and submit receipts for reimbursement",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Doctor's notes/forms": {
+            ramq: "Notes covered, fee for forms may apply",
+            other_prov: "Notes covered, fee for forms may apply",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
+          "Laboratory and diagnostic services": {
+            ramq: "No coverage",
+            other_prov: "Covered, must pay upfront and submit receipts for reimbursement",
+            bluecross: "TBD",
+            ssmu: "TBD"
+          },
         },
-        "Illness/injury assessment (non-emergency)": {
-          ramq: "Often covered (if eligible)",
-          other_prov: "Often reimbursed (varies)",
-          bluecross: "Often covered (check plan)",
-          ssmu: "Not primary"
-        },
-        "Basic prescriptions/refills (varies)": {
-          ramq: "Drug coverage eligibility varies",
-          other_prov: "Varies by province",
-          bluecross: "Often covered (check plan)",
-          ssmu: "May help with eligible costs"
-        }
+        tags: ["Example clinic", "Appointments / walk-in may vary"]
       },
-      tags: ["Example clinic", "Appointments / walk-in may vary"]
-    },
-    {
-      id: "cura-sante",
-      name: "Cura Santé (Example clinic)",
-      needs: ["general"],
-      clinicType: "private", 
-      problems: ["minor_illness", "physical_injury", "ongoing_pain", "skin", "digestive", "medication", "chronic", "forms", "other"],
-      address: "5515 Rue Saint-Jacques, Montréal, QC",
-      url: "https://www.mcgill.ca/wellness-hub/get-support/physical-health/appointment",
-      servicesOffered: [
-        "General medical appointments",
-        "Illness assessment",
-        "Referrals (varies by clinic)"
-      ],
-      coverageByService: {
-        "General medical appointments": {
-          ramq: "Often covered (if eligible)",
-          other_prov: "Often reimbursed (varies)",
-          bluecross: "Often covered (check plan)",
-          ssmu: "Not primary"
-        },
-        "Illness assessment": {
-          ramq: "Often covered (if eligible)",
-          other_prov: "Often reimbursed (varies)",
-          bluecross: "Often covered (check plan)",
-          ssmu: "Not primary"
-        },
-        "Referrals (varies by clinic)": {
-          ramq: "Often covered (service-dependent)",
-          other_prov: "Varies",
-          bluecross: "Varies",
-          ssmu: "N/A (usually)"
-        }
-      },
-      tags: ["Example clinic", "Appointments / walk-in may vary"]
-    }
   ];
 
-  /****************************************************
-   * 1) “NONE / NOT SURE” MUTUALLY EXCLUSIVE
-   ****************************************************/
-  
+
   /****************************************************
    * 2) COVERAGE TABLE HELPERS (only show selected columns)
    ****************************************************/
@@ -535,11 +549,27 @@
   let lastNeedLabel = "";
   let lastProblemLabel = "";
 
+  function getOtherProvClinicDisclaimer(location, selectedInsurance) {
+    const hasOtherProv = Array.isArray(selectedInsurance) && selectedInsurance.includes("other_prov");
+  
+    if (hasOtherProv && location.otherProvDisclaimer) {
+      return `
+        <p class="muted" style="margin-top:0.75rem;">
+          <strong>Out-of-province note:</strong> ${location.otherProvDisclaimer}
+        </p>
+      `;
+    }
+  
+    return "";
+  }
+
   function openDetailsPage(location, latLng) {
     if (!lastUserSelections) return;
 
     const directions = (latLng && latLng.lat && latLng.lng) ? getDirectionsUrl(latLng.lat, latLng.lng) : null;
-
+   
+    const otherProvClinicDisclaimer = getOtherProvClinicDisclaimer(location, lastUserSelections.insurance);
+   
     breadcrumb.textContent =
       lastNeedLabel + (lastProblemLabel ? ` → ${lastProblemLabel}` : "");
 
@@ -555,7 +585,7 @@
       <h2 style="margin-top:0;">${location.name}</h2>
 
       <div>${selectedBadges}</div>
-
+      ${otherProvClinicDisclaimer}
       ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ""}
       ${location.url ? `<p><strong>Website:</strong> <a href="${location.url}" target="_blank" rel="noopener noreferrer">${location.url}</a></p>` : ""}
       ${location.waitTimesUrl ? `<p><a href="${location.waitTimesUrl}" target="_blank">Check emergency room wait times</a></p>` : ""}
