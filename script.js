@@ -111,9 +111,298 @@ const virtualResources = [
   }
 ];
 
-// keep your existing locations array here unchanged
 const locations = [
-  // ... your current location objects ...
+//Emergency departments
+    {
+    id: "mgh-er",
+    name: "Montreal General Hospital (MUHC) – Emergency",
+    needs: ["urgent"],
+    clinicType: "public",
+    acceptedInsurance: ["ramq","other_prov","bluecross","ssmu"],
+    lat: 45.4969179,
+    lng: -73.5887870,
+    address: "1650 Cedar Ave, Montréal, QC, Canada",
+    url: "https://muhc.ca/montreal-general-hospital",
+    waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
+    servicesOffered: [
+    "Emergency assessment",
+    "Urgent imaging/referrals",
+    "Hospital-based emergency care"
+    ],
+    coverageByService: {
+    
+    "Emergency assessment": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Urgent imaging/referrals": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Hospital-based emergency care": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    }
+    
+    }
+    },
+    
+    {
+    id: "chum-er",
+    name: "CHUM – Emergency",
+    needs: ["urgent"],
+    clinicType: "public",
+    acceptedInsurance: ["ramq","other_prov","bluecross","ssmu"],
+    lat: 45.5119139,
+    lng: -73.5567639,
+    address: "1001 Rue Sanguinet, Montréal, QC, Canada",
+    url: "https://www.chumontreal.qc.ca",
+    waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
+    servicesOffered: [
+    "Emergency assessment",
+    "Hospital-based emergency care"
+    ],
+    coverageByService: {
+    
+    "Emergency assessment": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Hospital-based emergency care": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    }
+    
+    }
+    },
+    
+    {
+    id: "jgh-er",
+    name: "Jewish General Hospital – Emergency",
+    needs: ["urgent"],
+    clinicType: "public",
+    acceptedInsurance: ["ramq","other_prov","bluecross","ssmu"],
+    lat: 45.497927,
+    lng: -73.628881,
+    address: "3755 Chemin de la Côte-Sainte-Catherine, Montréal, QC, Canada",
+    url: "https://www.jgh.ca/care-services/emergency/",
+    waitTimesUrl: "https://www.quebec.ca/en/health/health-system-and-services/service-organization/quebec-health-system-and-its-services/situation-in-emergency-rooms-in-quebec",
+    servicesOffered: [
+    "Emergency assessment",
+    "Hospital-based emergency care"
+    ],
+    coverageByService: {
+    
+    "Emergency assessment": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Hospital-based emergency care": {
+    ramq: "Covered",
+    other_prov: "Covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    }
+    
+    }
+    },
+  //IN-person clinics  
+    {
+    id: "mcgill-wellness-hub",
+    name: "McGill Student Wellness Hub",
+    needs: ["general","mental","sexual"],
+    clinicType: "public",
+    acceptedInsurance: ["ramq","other_prov","bluecross","ssmu"],
+    lat: 45.50298,
+    lng: -73.58003,
+    address: "1070 Ave du Docteur-Penfield, Montréal, QC, Canada",
+    url: "https://www.mcgill.ca/wellness-hub/",
+    servicesOffered: [
+    "Appointments/referrals",
+    "Navigation to McGill health services",
+    "Wellness and mental health supports"
+    ],
+    coverageByService: {
+    
+    "Appointments/referrals": {
+    ramq: "Covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Varies — check plan",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Navigation to McGill health services": {
+    ramq: "Not applicable",
+    other_prov: "Not applicable",
+    bluecross: "Not applicable",
+    ssmu: "Not applicable"
+    },
+    
+    "Wellness and mental health supports": {
+    ramq: "Varies — check plan",
+    other_prov: "Varies — check plan",
+    bluecross: "Varies — check plan",
+    ssmu: "Covered"
+    }
+    
+    }
+    },
+    
+    {
+    id: "clinique-sans-rdv",
+    name: "Clinique Sans RDV",
+    needs: ["general"],
+    clinicType: "private",
+    acceptedInsurance: ["ramq","other_prov","bluecross","ssmu"],
+    lat: 45.5015,
+    lng: -73.5684,
+    address: "1191 Avenue Union, Montréal, QC, Canada",
+    url: "https://cliniquesansrdv.ca/en/clinics/walk-in-clinic-montreal/",
+    servicesOffered: [
+    "Minor illness",
+    "Ongoing pain",
+    "Skin concerns",
+    "Stomach or digestive issues",
+    "Medication questions or refills",
+    "Doctor's notes/forms"
+    ],
+    coverageByService: {
+    
+    "Minor illness": {
+    ramq: "Not covered",
+    other_prov: "Not covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Varies — check plan"
+    },
+    
+    "Ongoing pain": {
+    ramq: "Not covered",
+    other_prov: "Not covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Varies — check plan"
+    },
+    
+    "Skin concerns": {
+    ramq: "Not covered",
+    other_prov: "Not covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Varies — check plan"
+    },
+    
+    "Stomach or digestive issues": {
+    ramq: "Not covered",
+    other_prov: "Not covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Varies — check plan"
+    },
+    
+    "Medication questions or refills": {
+    ramq: "Not covered",
+    other_prov: "Not covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Varies — check plan"
+    },
+    
+    "Doctor's notes/forms": {
+    ramq: "Not covered",
+    other_prov: "Not covered",
+    bluecross: "Varies — check plan",
+    ssmu: "Varies — check plan"
+    }
+    
+    }
+    },
+    
+    {
+    id: "gmf-metro-medic",
+    name: "GMF Metro Médic Centre-Ville",
+    needs: ["general"],
+    clinicType: "public",
+    acceptedInsurance: ["ramq","other_prov"],
+    lat: 45.5043144,
+    lng: -73.5721130,
+    address: "2020 Robert-Bourassa Blvd, Suite 1920, Montréal, QC, Canada",
+    url: "https://cliniquesansrdv.ca/en/clinics/walk-in-clinic-montreal/",
+    otherProvDisclaimer: "Your home province may only reimburse up to the amount it would have paid for the same service at home. If this clinic charges more, you may have to pay the difference yourself.",
+    servicesOffered: [
+    "Minor illness",
+    "Ongoing pain",
+    "Skin concerns",
+    "Stomach or digestive issues",
+    "Medication questions or refills",
+    "Doctor's notes/forms",
+    "Laboratory and diagnostic services"
+    ],
+    coverageByService: {
+    
+    "Minor illness": {
+    ramq: "Covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Not covered",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Ongoing pain": {
+    ramq: "Covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Not covered",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Skin concerns": {
+    ramq: "Covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Not covered",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Stomach or digestive issues": {
+    ramq: "Covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Not covered",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Medication questions or refills": {
+    ramq: "Covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Not covered",
+    ssmu: "Not primary insurance"
+    },
+    
+    "Doctor's notes/forms": {
+    ramq: "Covered (notes only)",
+    other_prov: "Covered (notes only)",
+    bluecross: "Not covered",
+    ssmu: "Varies — check plan"
+    },
+    
+    "Laboratory and diagnostic services": {
+    ramq: "Not covered",
+    other_prov: "Covered — pay upfront and submit receipts for reimbursement",
+    bluecross: "Not covered",
+    ssmu: "Varies — check plan"
+    }
+    
+    }
+}
+
 ];
 
 /*************************************
